@@ -1,0 +1,14 @@
+{
+    "name": "Unity.ugui.EditorTests",
+    "references": [
+        "Unity.ugui.Editor",
+        "Unity.ugui"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}

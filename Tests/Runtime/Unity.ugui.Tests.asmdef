@@ -1,0 +1,11 @@
+{
+    "name": "Unity.ugui.Tests",
+    "references": [
+        "Unity.ugui"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
