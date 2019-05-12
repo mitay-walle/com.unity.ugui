@@ -1,0 +1,11 @@
+{
+    "name": "Unity.ugui.Editor",
+ 
+    "references": [
+      "Unity.ugui"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": []
+}
