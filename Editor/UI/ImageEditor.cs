@@ -26,6 +26,7 @@ namespace UnityEditor.UI
         SerializedProperty m_Sprite;
         SerializedProperty m_PreserveAspect;
         SerializedProperty m_UseSpriteMesh;
+        SerializedProperty m_PixelsPerUnitMultiplier;
         GUIContent m_SpriteContent;
         GUIContent m_SpriteTypeContent;
         GUIContent m_ClockwiseContent;
@@ -52,6 +53,7 @@ namespace UnityEditor.UI
             m_FillAmount            = serializedObject.FindProperty("m_FillAmount");
             m_PreserveAspect        = serializedObject.FindProperty("m_PreserveAspect");
             m_UseSpriteMesh         = serializedObject.FindProperty("m_UseSpriteMesh");
+            m_PixelsPerUnitMultiplier = serializedObject.FindProperty("m_PixelsPerUnitMultiplier");
 
             m_ShowType = new AnimBool(m_Sprite.objectReferenceValue != null);
             m_ShowType.valueChanged.AddListener(Repaint);
@@ -169,6 +171,7 @@ namespace UnityEditor.UI
                 {
                     if (image.hasBorder)
                         EditorGUILayout.PropertyField(m_FillCenter);
+                    EditorGUILayout.PropertyField(m_PixelsPerUnitMultiplier);
                 }
                 EditorGUILayout.EndFadeGroup();
 

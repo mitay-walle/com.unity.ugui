@@ -230,7 +230,8 @@ namespace UnityEngine.UI
         static protected Material s_ETC1DefaultUI = null;
 
         [FormerlySerializedAs("m_Frame")]
-        [SerializeField] private Sprite m_Sprite;
+        [SerializeField]
+        private Sprite m_Sprite;
 
         /// <summary>
         /// The sprite that is used to render this image.
@@ -282,7 +283,6 @@ namespace UnityEngine.UI
                         m_SkipLayoutUpdate = m_Sprite.rect.size.Equals(value ? value.rect.size : Vector2.zero);
                         m_SkipMaterialUpdate = m_Sprite.texture == (value ? value.texture : null);
                         m_Sprite = value;
-                        m_UseCache = m_Sprite != null && !m_Sprite.packed && type == Image.Type.Simple;
 
                         SetAllDirty();
                         TrackSprite();
@@ -292,7 +292,6 @@ namespace UnityEngine.UI
                 {
                     m_SkipLayoutUpdate = value.rect.size == Vector2.zero;
                     m_SkipMaterialUpdate = value.texture == null;
-                    m_UseCache = false;
                     m_Sprite = value;
 
                     SetAllDirty();
@@ -313,7 +312,6 @@ namespace UnityEngine.UI
         {
             m_SkipLayoutUpdate = false;
             m_SkipMaterialUpdate = false;
-            m_UseCache = false;
         }
 
         [NonSerialized]
@@ -442,7 +440,8 @@ namespace UnityEngine.UI
 
         /// Amount of the Image shown. 0-1 range with 0 being nothing shown, and 1 being the full Image.
         [Range(0, 1)]
-        [SerializeField] private float m_FillAmount = 1.0f;
+        [SerializeField]
+        private float m_FillAmount = 1.0f;
 
         /// <summary>
         /// Amount of the Image shown when the Image.type is set to Image.Type.Filled.
@@ -570,8 +569,6 @@ namespace UnityEngine.UI
         // Whether this is being tracked for Atlas Binding.
         private bool m_Tracked = false;
 
-        private bool m_UseCache = false;
-
         [Obsolete("eventAlphaThreshold has been deprecated. Use eventMinimumAlphaThreshold instead (UnityUpgradable) -> alphaHitTestMinimumThreshold")]
 
         /// <summary>
@@ -680,6 +677,22 @@ namespace UnityEngine.UI
             }
         }
 
+
+        [SerializeField]
+        private float m_PixelsPerUnitMultiplier = 1.0f;
+
+        /// <summary>
+        /// Pixel per unit modifier to change how sliced sprites are generated.
+        /// </summary>
+        public float pixelsPerUnitMultiplier
+        {
+            get { return m_PixelsPerUnitMultiplier; }
+            set
+            {
+                m_PixelsPerUnitMultiplier = Mathf.Max(0.01f, value);
+            }
+        }
+
         // case 1066689 cache referencePixelsPerUnit when canvas parent is disabled;
         private float m_CachedReferencePixelsPerUnit = 100;
 
@@ -696,6 +709,11 @@ namespace UnityEngine.UI
 
                 return spritePixelsPerUnit / m_CachedReferencePixelsPerUnit;
             }
+        }
+
+        protected float multipliedPixelsPerUnit
+        {
+            get { return pixelsPerUnit * m_PixelsPerUnitMultiplier; }
         }
 
         /// <summary>
@@ -845,33 +863,6 @@ namespace UnityEngine.UI
                 case Type.Filled:
                     GenerateFilledSprite(toFill, m_PreserveAspect);
                     break;
-            }
-        }
-
-        protected override void UpdateGeometry()
-        {
-            if (m_UseCache && m_CachedMesh)
-            {
-                Vector4 uv = (activeSprite != null) ? Sprites.DataUtility.GetOuterUV(activeSprite) : Vector4.zero;
-                m_CachedUvs[0][0] = uv.x;
-                m_CachedUvs[0][1] = uv.y;
-                m_CachedUvs[1][0] = uv.x;
-                m_CachedUvs[1][1] = uv.w;
-                m_CachedUvs[2][0] = uv.z;
-                m_CachedUvs[2][1] = uv.w;
-                m_CachedUvs[3][0] = uv.z;
-                m_CachedUvs[3][1] = uv.y;
-                m_CachedMesh.uv = m_CachedUvs;
-                canvasRenderer.SetMesh(m_CachedMesh);
-                return;
-            }
-
-            base.UpdateGeometry();
-
-            if (m_UseCache)
-            {
-                m_CachedMesh = Instantiate(workerMesh);
-                m_CachedUvs = new Vector2[m_CachedMesh.uv.Length];
             }
         }
 
@@ -1028,8 +1019,9 @@ namespace UnityEngine.UI
             }
 
             Rect rect = GetPixelAdjustedRect();
-            Vector4 adjustedBorders = GetAdjustedBorders(border / pixelsPerUnit, rect);
-            padding = padding / pixelsPerUnit;
+
+            Vector4 adjustedBorders = GetAdjustedBorders(border / multipliedPixelsPerUnit, rect);
+            padding = padding / multipliedPixelsPerUnit;
 
             s_VertScratch[0] = new Vector2(padding.x, padding.y);
             s_VertScratch[3] = new Vector2(rect.width - padding.z, rect.height - padding.w);
@@ -1100,9 +1092,10 @@ namespace UnityEngine.UI
             }
 
             Rect rect = GetPixelAdjustedRect();
-            float tileWidth = (spriteSize.x - border.x - border.z) / pixelsPerUnit;
-            float tileHeight = (spriteSize.y - border.y - border.w) / pixelsPerUnit;
-            border = GetAdjustedBorders(border / pixelsPerUnit, rect);
+            float tileWidth = (spriteSize.x - border.x - border.z) / multipliedPixelsPerUnit;
+            float tileHeight = (spriteSize.y - border.y - border.w) / multipliedPixelsPerUnit;
+
+            border = GetAdjustedBorders(border / multipliedPixelsPerUnit, rect);
 
             var uvMin = new Vector2(inner.x, inner.y);
             var uvMax = new Vector2(inner.z, inner.w);
@@ -1875,5 +1868,20 @@ namespace UnityEngine.UI
         {
             m_TrackedTexturelessImages.Remove(g);
         }
+
+        protected override void OnDidApplyAnimationProperties()
+        {
+            SetMaterialDirty();
+            SetVerticesDirty();
+        }
+
+#if UNITY_EDITOR
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            m_PixelsPerUnitMultiplier = Mathf.Max(0.01f, m_PixelsPerUnitMultiplier);
+        }
+
+#endif
     }
 }

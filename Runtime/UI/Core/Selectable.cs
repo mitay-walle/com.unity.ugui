@@ -113,7 +113,7 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-        public static int AllSelectablesNoAlloc(ref Selectable[] selectables)
+        public static int AllSelectablesNoAlloc(Selectable[] selectables)
         {
             if (s_IsDirty)
                 RemoveInvalidSelectables();
@@ -504,6 +504,14 @@ namespace UnityEngine.UI
             s_Selectables[s_SelectableCount++] = this;
             isPointerDown = false;
             DoStateTransition(currentSelectionState, true);
+        }
+
+        protected override void OnTransformParentChanged()
+        {
+            base.OnTransformParentChanged();
+
+            // If our parenting changes figure out if we are under a new CanvasGroup.
+            OnCanvasGroupChanged();
         }
 
         private void OnSetProperty()

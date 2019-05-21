@@ -151,5 +151,11 @@ namespace UnityEngine.UI
                 }
             }
         }
+
+        protected override void OnDidApplyAnimationProperties()
+        {
+            SetMaterialDirty();
+            SetVerticesDirty();
+        }
     }
 }

@@ -1,6 +1,4 @@
-//Entire class disabled due to a major instability - discussion on Slack at #ui-toggle-instability
-
-/*using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -200,4 +198,3 @@ namespace ToggleTest
         }
     }
 }
-*/
