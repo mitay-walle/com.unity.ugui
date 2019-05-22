@@ -6,7 +6,6 @@ public class TestableImage : Image
 {
     public bool isOnPopulateMeshCalled = false;
     public bool isGeometryUpdated = false;
-    public bool isCacheUsed = false;
 
     // Hook into the mesh generation so we can do our check.
     protected override void OnPopulateMesh(VertexHelper toFill)
@@ -20,8 +19,6 @@ public class TestableImage : Image
     {
         base.UpdateGeometry();
         isGeometryUpdated = true;
-        FieldInfo fieldInfo = typeof(Image).GetField("m_UseCache", BindingFlags.Instance | BindingFlags.NonPublic);
-        isCacheUsed = (bool)fieldInfo.GetValue(gameObject.GetComponent<TestableImage>());
     }
 
     public void GenerateImageData(VertexHelper vh)
