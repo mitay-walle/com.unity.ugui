@@ -1,3 +1,4 @@
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,11 +35,12 @@ namespace UnityEditor.UI
             EditorGUILayout.Space();
 
             serializedObject.Update();
+            Toggle toggle = serializedObject.targetObject as Toggle;
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(m_IsOnProperty);
             if (EditorGUI.EndChangeCheck())
             {
-                Toggle toggle = serializedObject.targetObject as Toggle;
+                EditorSceneManager.MarkSceneDirty(toggle.gameObject.scene);
                 ToggleGroup group = m_GroupProperty.objectReferenceValue as ToggleGroup;
 
                 toggle.isOn = m_IsOnProperty.boolValue;
@@ -58,7 +60,7 @@ namespace UnityEditor.UI
             EditorGUILayout.PropertyField(m_GroupProperty);
             if (EditorGUI.EndChangeCheck())
             {
-                Toggle toggle = serializedObject.targetObject as Toggle;
+                EditorSceneManager.MarkSceneDirty(toggle.gameObject.scene);
                 ToggleGroup group = m_GroupProperty.objectReferenceValue as ToggleGroup;
                 toggle.group = group;
             }

@@ -627,11 +627,40 @@ namespace UnityEngine.UI
             item.toggle = itemToggle;
             item.rectTransform = (RectTransform)itemToggle.transform;
 
+            // Find the Canvas that this dropdown is a part of
+            Canvas parentCanvas = null;
+            Transform parentTransform = m_Template.parent;
+            while (parentTransform != null)
+            {
+                parentCanvas = parentTransform.GetComponent<Canvas>();
+                if (parentCanvas != null)
+                    break;
+
+                parentTransform = parentTransform.parent;
+            }
+
             Canvas popupCanvas = GetOrAddComponent<Canvas>(templateGo);
             popupCanvas.overrideSorting = true;
             popupCanvas.sortingOrder = 30000;
 
-            GetOrAddComponent<GraphicRaycaster>(templateGo);
+            // If we have a parent canvas, apply the same raycasters as the parent for consistency.
+            if (parentCanvas != null)
+            {
+                Component[] components = parentCanvas.GetComponents<BaseRaycaster>();
+                for (int i = 0; i < components.Length; i++)
+                {
+                    Type raycasterType = components[i].GetType();
+                    if (templateGo.GetComponent(raycasterType) == null)
+                    {
+                        templateGo.AddComponent(raycasterType);
+                    }
+                }
+            }
+            else
+            {
+                GetOrAddComponent<GraphicRaycaster>(templateGo);
+            }
+
             GetOrAddComponent<CanvasGroup>(templateGo);
             templateGo.SetActive(false);
 
@@ -866,8 +895,37 @@ namespace UnityEngine.UI
             blockerCanvas.sortingLayerID = dropdownCanvas.sortingLayerID;
             blockerCanvas.sortingOrder = dropdownCanvas.sortingOrder - 1;
 
-            // Add raycaster since it's needed to block.
-            blocker.AddComponent<GraphicRaycaster>();
+            // Find the Canvas that this dropdown is a part of
+            Canvas parentCanvas = null;
+            Transform parentTransform = m_Template.parent;
+            while (parentTransform != null)
+            {
+                parentCanvas = parentTransform.GetComponent<Canvas>();
+                if (parentCanvas != null)
+                    break;
+
+                parentTransform = parentTransform.parent;
+            }
+
+            // If we have a parent canvas, apply the same raycasters as the parent for consistency.
+            if (parentCanvas != null)
+            {
+                Component[] components = parentCanvas.GetComponents<BaseRaycaster>();
+                for (int i = 0; i < components.Length; i++)
+                {
+                    Type raycasterType = components[i].GetType();
+                    if (blocker.GetComponent(raycasterType) == null)
+                    {
+                        blocker.AddComponent(raycasterType);
+                    }
+                }
+            }
+            else
+            {
+                // Add raycaster since it's needed to block.
+                GetOrAddComponent<GraphicRaycaster>(blocker);
+            }
+
 
             // Add image since it's needed to block, but make it clear.
             Image blockerImage = blocker.AddComponent<Image>();

@@ -273,7 +273,7 @@ namespace UnityEngine.UI
         /// <param name="v">The vertex to add</param>
         public void AddVert(UIVertex v)
         {
-            AddVert(v.position, v.color, v.uv0, v.uv1, v.normal, v.tangent);
+            AddVert(v.position, v.color, v.uv0, v.uv1, v.uv2, v.uv3, v.normal, v.tangent);
         }
 
         /// <summary>

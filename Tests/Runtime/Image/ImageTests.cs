@@ -129,39 +129,6 @@ public class ImageTests
         Assert.IsTrue(m_dirtyMaterial);
     }
 
-    [UnityTest]
-    public IEnumerator Sprite_Cache()
-    {
-        m_Image.sprite = Sprite.Create(m_defaultTexture, new Rect(0, 0, Width, Height), Vector2.zero);
-        yield return null;
-
-        m_Image.isGeometryUpdated = false;
-        FieldInfo field = typeof(UnityEngine.UI.Image).GetField("m_UseCache", BindingFlags.Instance | BindingFlags.NonPublic);
-
-        field.SetValue(m_Image, true);
-
-        // wait until cache is initialized
-        m_Image.sprite = Sprite.Create(m_defaultTexture, new Rect(0, 0, Width, Height), Vector2.zero);
-        yield return new WaitUntil(() => m_Image.isGeometryUpdated);
-
-        m_Image.isGeometryUpdated = false;
-        m_Image.isCacheUsed = false;
-        m_Image.sprite = Sprite.Create(m_defaultTexture, new Rect(0, 0, Width, Height), Vector2.zero);
-        yield return new WaitUntil(() => m_Image.isGeometryUpdated);
-
-        // validate that cache mesh is used
-        Assert.IsTrue(m_Image.isCacheUsed);
-
-        m_Image.isGeometryUpdated = false;
-        m_Image.isCacheUsed = false;
-        m_Image.sprite = Sprite.Create(m_defaultTexture, new Rect(0, 0, Width, Height), Vector2.zero);
-        field.SetValue(m_Image, false);
-        yield return new WaitUntil(() => m_Image.isGeometryUpdated);
-
-        // validate that cache mesh is not used
-        Assert.IsFalse(m_Image.isCacheUsed);
-    }
-
     [TearDown]
     public void TearDown()
     {
