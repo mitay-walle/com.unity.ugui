@@ -1,5 +1,5 @@
 {
-    "name": "UnityEngine.UI",
+    "name": "Unity.ugui",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": []

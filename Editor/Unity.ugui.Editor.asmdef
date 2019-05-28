@@ -1,8 +1,8 @@
 {
-    "name": "UnityEditor.UI",
+    "name": "Unity.ugui.Editor",
  
     "references": [
-      "UnityEngine.UI"
+      "Unity.ugui"
     ],
     "includePlatforms": [
         "Editor"

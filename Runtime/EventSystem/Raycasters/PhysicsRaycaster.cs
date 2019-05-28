@@ -91,10 +91,9 @@ namespace UnityEngine.EventSystems
         /// </summary>
         /// <param name="eventData">The pointer event for which we will cast a ray.</param>
         /// <param name="ray">The ray to use.</param>
-        /// <param name="eventDisplayIndex">The display index used.</param>
         /// <param name="distanceToClipPlane">The distance between the near and far clipping planes along the ray.</param>
         /// <returns>True if the operation was successful. false if it was not possible to compute, such as the eventPosition being outside of the view.</returns>
-        protected bool ComputeRayAndDistance(PointerEventData eventData, ref Ray ray, ref int eventDisplayIndex, ref float distanceToClipPlane)
+        protected bool ComputeRayAndDistance(PointerEventData eventData, ref Ray ray, ref float distanceToClipPlane)
         {
             if (eventCamera == null)
                 return false;
@@ -103,7 +102,7 @@ namespace UnityEngine.EventSystems
             if (eventPosition != Vector3.zero)
             {
                 // We support multiple display and display identification based on event position.
-                eventDisplayIndex = (int)eventPosition.z;
+                int eventDisplayIndex = (int)eventPosition.z;
 
                 // Discard events that are not part of this display so the user does not interact with multiple displays at once.
                 if (eventDisplayIndex != eventCamera.targetDisplay)
@@ -132,9 +131,8 @@ namespace UnityEngine.EventSystems
         public override void Raycast(PointerEventData eventData, List<RaycastResult> resultAppendList)
         {
             Ray ray = new Ray();
-            int displayIndex = 0;
             float distanceToClipPlane = 0;
-            if (!ComputeRayAndDistance(eventData, ref ray, ref displayIndex, ref distanceToClipPlane))
+            if (!ComputeRayAndDistance(eventData, ref ray, ref distanceToClipPlane))
                 return;
 
             int hitCount = 0;
@@ -176,7 +174,6 @@ namespace UnityEngine.EventSystems
                         worldPosition = m_Hits[b].point,
                         worldNormal = m_Hits[b].normal,
                         screenPosition = eventData.position,
-                        displayIndex = displayIndex,
                         index = resultAppendList.Count,
                         sortingLayer = 0,
                         sortingOrder = 0

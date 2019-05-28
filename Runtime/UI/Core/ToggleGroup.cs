@@ -31,16 +31,6 @@ namespace UnityEngine.UI
         protected ToggleGroup()
         {}
 
-        /// <summary>
-        /// Because all the Toggles have registered themselves in the OnEnabled, Start should check to
-        /// make sure at least one Toggle is active in groups that do not AllowSwitchOff
-        /// </summary>
-        protected override void Start()
-        {
-            EnsureValidState();
-            base.Start();
-        }
-
         private void ValidateToggleIsInGroup(Toggle toggle)
         {
             if (toggle == null || !m_Toggles.Contains(toggle))
@@ -76,6 +66,12 @@ namespace UnityEngine.UI
         {
             if (m_Toggles.Contains(toggle))
                 m_Toggles.Remove(toggle);
+
+            if (!allowSwitchOff && !AnyTogglesOn() && m_Toggles.Count != 0)
+            {
+                m_Toggles[0].isOn = true;
+                NotifyToggleOn(m_Toggles[0]);
+            }
         }
 
         /// <summary>
@@ -86,18 +82,11 @@ namespace UnityEngine.UI
         {
             if (!m_Toggles.Contains(toggle))
                 m_Toggles.Add(toggle);
-        }
 
-        /// <summary>
-        /// Ensure that the toggle group still has a valid state. This is only relevant when a ToggleGroup is Started
-        /// or a Toggle has been deleted from the group.
-        /// </summary>
-        public void EnsureValidState()
-        {
-            if (!allowSwitchOff && !AnyTogglesOn() && m_Toggles.Count != 0)
+            if (!allowSwitchOff && !AnyTogglesOn())
             {
-                m_Toggles[0].isOn = true;
-                NotifyToggleOn(m_Toggles[0]);
+                toggle.isOn = true;
+                NotifyToggleOn(toggle);
             }
         }
 

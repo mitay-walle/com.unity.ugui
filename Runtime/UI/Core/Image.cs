@@ -835,22 +835,6 @@ namespace UnityEngine.UI
             }
         }
 
-        protected override void OnRectTransformDimensionsChange()
-        {
-            base.OnRectTransformDimensionsChange();
-
-            // Reset using the cached mesh as our dimensions have changed so we need to repopulate.
-            DisableSpriteOptimizations();
-        }
-
-        protected override void OnTransformParentChanged()
-        {
-            base.OnTransformParentChanged();
-
-            // Reset using the cached mesh as our dimensions have changed so we need to repopulate.
-            DisableSpriteOptimizations();
-        }
-
         /// <summary>
         /// Update the UI renderer mesh.
         /// </summary>
@@ -1883,6 +1867,12 @@ namespace UnityEngine.UI
         private static void UnTrackImage(Image g)
         {
             m_TrackedTexturelessImages.Remove(g);
+        }
+
+        protected override void OnDidApplyAnimationProperties()
+        {
+            SetMaterialDirty();
+            SetVerticesDirty();
         }
 
 #if UNITY_EDITOR

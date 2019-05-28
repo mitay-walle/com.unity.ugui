@@ -1,6 +1,4 @@
-//Entire class disabled due to a major instability - discussion on Slack at #ui-toggle-instability
-
-/*using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -36,28 +34,25 @@ namespace ToggleTest
         {
 #if UNITY_EDITOR
             var rootGO = new GameObject("rootGo");
-            GameObject canvasGO = ComponentCreator.CreateCanvasRoot("Canvas");
+
+            GameObject canvasGO = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
             canvasGO.transform.SetParent(rootGO.transform);
 
-            // factory function alias for brevity
-            var c = ComponentCreator.CreationInfo.Creator;
-            ComponentCreator.CreationInfo template =
-                c("TestToggle") // object name
-                    .With<Toggle>()
-                    .With<ToggleTestImageHook>();
+            var canvas = canvasGO.GetComponent<Canvas>();
+            canvas.referencePixelsPerUnit = 100;
 
-            var nameToObjectMapping = new Dictionary<string, GameObject>();
-            ComponentCreator.CreateHierarchy(info: template, parent: canvasGO, dict: nameToObjectMapping);
+            var toggleGO = new GameObject("TestToggle", typeof(RectTransform), typeof(Toggle), typeof(Image));
+            toggleGO.transform.SetParent(canvasGO.transform);
 
-            var toggle = nameToObjectMapping["TestToggle"].GetComponent<Toggle>();
+            var toggle = toggleGO.GetComponent<Toggle>();
             toggle.enabled = true;
-            toggle.graphic = nameToObjectMapping["TestToggle"].GetComponent<ToggleTestImageHook>();
+            toggle.graphic = toggleGO.GetComponent<Image>();
             toggle.graphic.canvasRenderer.SetColor(Color.white);
 
             if (!Directory.Exists("Assets/Resources/"))
                 Directory.CreateDirectory("Assets/Resources/");
 
-            PrefabUtility.CreatePrefab(kPrefabTogglePath, rootGO);
+            PrefabUtility.SaveAsPrefabAsset(rootGO, kPrefabTogglePath);
 #endif
         }
 
@@ -65,40 +60,32 @@ namespace ToggleTest
         {
 #if UNITY_EDITOR
             var rootGO = new GameObject("rootGo");
-            GameObject canvasGO = ComponentCreator.CreateCanvasRoot("Canvas");
+            GameObject canvasGO = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
             canvasGO.transform.SetParent(rootGO.transform);
 
-            // factory function alias for brevity
-            var c = ComponentCreator.CreationInfo.Creator;
-            ComponentCreator.CreationInfo templateGroup =
-                c("ToggleGroup") // object name
-                    .With<ToggleGroup>();
+            var toggleGroupGO = new GameObject("ToggleGroup", typeof(RectTransform), typeof(ToggleGroup));
+            toggleGroupGO.transform.SetParent(canvasGO.transform);
+            toggleGroupGO.AddComponent(typeof(ToggleGroup));
 
-            for (int i = 0; i < nbToggleInGroup; ++i)
-            {
-                var t = ComponentCreator.CreationInfo.Creator;
-                ComponentCreator.CreationInfo templateToggle =
-                    t("TestToggle" + i) // object name
-                        .With<Toggle>()
-                        .With<ToggleTestImageHook>();
-                templateGroup.Children.Add(templateToggle);
-            }
+            var toggle0GO = new GameObject("TestToggle0", typeof(RectTransform), typeof(Toggle), typeof(Image));
+            toggle0GO.transform.SetParent(toggleGroupGO.transform);
 
-            var nameToObjectMapping = new Dictionary<string, GameObject>();
-            ComponentCreator.CreateHierarchy(info: templateGroup, parent: canvasGO, dict: nameToObjectMapping);
+            var toggle1GO = new GameObject("TestToggle1", typeof(RectTransform), typeof(Toggle), typeof(Image));
+            toggle1GO.transform.SetParent(toggleGroupGO.transform);
 
-            for (int i = 0; i < nbToggleInGroup; ++i)
-            {
-                var toggle = nameToObjectMapping["TestToggle" + i].GetComponent<Toggle>();
-                toggle.enabled = true;
-                toggle.graphic = nameToObjectMapping["TestToggle" + i].GetComponent<ToggleTestImageHook>();
-                toggle.graphic.canvasRenderer.SetColor(Color.white);
-            }
+            var toggle = toggle0GO.GetComponent<Toggle>();
+            toggle.graphic = toggle0GO.GetComponent<Image>();
+            toggle.graphic.canvasRenderer.SetColor(Color.white);
+
+            var toggle1 = toggle1GO.GetComponent<Toggle>();
+            toggle1.graphic = toggle1GO.GetComponent<Image>();
+            toggle1.graphic.canvasRenderer.SetColor(Color.white);
+
 
             if (!Directory.Exists("Assets/Resources/"))
                 Directory.CreateDirectory("Assets/Resources/");
 
-            PrefabUtility.CreatePrefab(kPrefabToggleGroupPath, rootGO);
+            PrefabUtility.SaveAsPrefabAsset(rootGO, kPrefabToggleGroupPath);
 #endif
         }
 
@@ -106,8 +93,7 @@ namespace ToggleTest
         public virtual void TestSetup()
         {
             m_PrefabRoot = Object.Instantiate(Resources.Load("TestToggle")) as GameObject;
-            var node = m_PrefabRoot.transform.Find("Canvas/TestToggle");
-            m_toggle.Add(node.gameObject.GetComponent<Toggle>());
+            m_toggle.Add(m_PrefabRoot.GetComponentInChildren<Toggle>());
         }
 
         [TearDown]
@@ -150,50 +136,6 @@ namespace ToggleTest
             m_toggle[0].enabled = false;
             m_toggle[0].OnSubmit(null);
             Assert.IsTrue(m_toggle[0].isOn);
-        }
-
-        [UnityTest][Ignore("Test doesn't pass")]
-        public IEnumerator ToggleOnShouldStartTransition()
-        {
-            m_toggle[0].toggleTransition = Toggle.ToggleTransition.Fade;
-            m_toggle[0].isOn = false;
-            m_toggle[0].OnSubmit(null);
-            var hook = m_toggle[0].graphic as ToggleTestImageHook;
-            yield return new WaitForSeconds(hook.durationTween);
-            Assert.AreEqual(1, m_toggle[0].graphic.canvasRenderer.GetColor().a);
-        }
-
-        [UnityTest][Ignore("Test doesn't pass")]
-        public IEnumerator ToggleOffShouldStartTransition()
-        {
-            m_toggle[0].toggleTransition = Toggle.ToggleTransition.Fade;
-            m_toggle[0].isOn = true;
-            m_toggle[0].OnSubmit(null);
-            var hook = m_toggle[0].graphic as ToggleTestImageHook;
-            yield return new WaitForSeconds(hook.durationTween);
-            Assert.AreEqual(0, m_toggle[0].graphic.canvasRenderer.GetColor().a);
-        }
-
-        [UnityTest][Ignore("Test doesn't pass")]
-        public IEnumerator ToggleOnTransitionNoneShouldNotStartTransition()
-        {
-            m_toggle[0].toggleTransition = Toggle.ToggleTransition.None;
-            m_toggle[0].isOn = false;
-            m_toggle[0].OnSubmit(null);
-            var hook = m_toggle[0].graphic as ToggleTestImageHook;
-            yield return new WaitForSeconds(hook.durationTween);
-            Assert.AreEqual(1, m_toggle[0].graphic.canvasRenderer.GetColor().a);
-        }
-
-        [UnityTest][Ignore("Test doesn't pass")]
-        public IEnumerator ToggleOffTransitionNoneShouldNotStartTransition()
-        {
-            m_toggle[0].toggleTransition = Toggle.ToggleTransition.None;
-            m_toggle[0].isOn = true;
-            m_toggle[0].OnSubmit(null);
-            var hook = m_toggle[0].graphic as ToggleTestImageHook;
-            yield return new WaitForSeconds(hook.durationTween);
-            Assert.AreEqual(0, m_toggle[0].graphic.canvasRenderer.GetColor().a);
         }
     }
 
@@ -256,4 +198,3 @@ namespace ToggleTest
         }
     }
 }
-*/

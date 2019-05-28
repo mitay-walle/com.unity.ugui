@@ -1,7 +1,7 @@
 {
-    "name": "UnityEngine.UI.Tests",
+    "name": "Unity.ugui.Tests",
     "references": [
-        "UnityEngine.UI"
+        "Unity.ugui"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"
