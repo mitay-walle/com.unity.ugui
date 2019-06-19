@@ -2879,11 +2879,16 @@ namespace UnityEngine.UI
                 // The value only needs to be updated once when the TouchKeyboard is opened.
                 m_TouchKeyboardAllowsInPlaceEditing = TouchScreenKeyboard.isInPlaceEditingAllowed;
 
-                // Mimics OnFocus but as mobile doesn't properly support select all
-                // just set it to the end of the text (where it would move when typing starts)
-                MoveTextEnd(false);
+                // If TouchKeyboard doesn't support InPlaceEditing don't call OnFocus as mobile doesn't properly support select all
+                // Just set it to the end of the text (where it would move when typing starts)
+                if (!m_TouchKeyboardAllowsInPlaceEditing)
+                {
+                    MoveTextEnd(false);
+                }
             }
-            else
+
+            // Perform normal OnFocus routine if platform supports it
+            if (!TouchScreenKeyboard.isSupported || m_TouchKeyboardAllowsInPlaceEditing)
             {
                 input.imeCompositionMode = IMECompositionMode.On;
                 OnFocus();

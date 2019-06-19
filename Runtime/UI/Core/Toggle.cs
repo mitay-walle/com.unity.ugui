@@ -138,6 +138,13 @@ namespace UnityEngine.UI
         public virtual void GraphicUpdateComplete()
         {}
 
+        protected override void OnDestroy()
+        {
+            if (m_Group != null)
+                m_Group.EnsureValidState();
+            base.OnDestroy();
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
