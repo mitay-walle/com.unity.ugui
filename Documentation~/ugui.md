@@ -22,7 +22,7 @@ Class descriptions and API compatibility can be found in the [UnityEngine.UI](ht
 
 This version of Unity UI is compatible with the following versions of the Unity Editor:
 
-* 2018.3 and later (recommended)
+* 2019.2 and later (recommended)
 
 ## Package contents
 
@@ -30,10 +30,3 @@ This version of Unity UI is compatible with the following versions of the Unity 
 |---|---|
 |`<Editor>`| Root folder containing the source for the Unity UI Editor scripts. These provide custom inspectors and layouts for the components|
 |`<Runtime>`| Root folder containing the source for the Unity UI Runtime. These are the runtime files and basic components available for use.|
-
-
-## Document revision history
-
-|Date|Reason|
-|---|---|
-|May 3rd, 2018| Document created.|
