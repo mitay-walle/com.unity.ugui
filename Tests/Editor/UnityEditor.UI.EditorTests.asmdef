@@ -1,8 +1,8 @@
 {
-    "name": "Unity.ugui.EditorTests",
+    "name": "UnityEditor.UI.EditorTests",
     "references": [
-        "Unity.ugui.Editor",
-        "Unity.ugui"
+        "UnityEditor.UI",
+        "UnityEngine.UI"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"

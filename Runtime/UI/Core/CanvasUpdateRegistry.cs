@@ -7,6 +7,7 @@ namespace UnityEngine.UI
     /// <summary>
     /// Values of 'update' called on a Canvas update.
     /// </summary>
+    /// <remarks> If modifying also modify m_CanvasUpdateProfilerStrings to match.</remarks>
     public enum CanvasUpdate
     {
         /// <summary>
@@ -77,6 +78,10 @@ namespace UnityEngine.UI
 
         private bool m_PerformingLayoutUpdate;
         private bool m_PerformingGraphicUpdate;
+
+        // This list matches the CanvasUpdate enum above. Keep in sync
+        private string[] m_CanvasUpdateProfilerStrings = new string[] { "CanvasUpdate.Prelayout", "CanvasUpdate.Layout", "CanvasUpdate.PostLayout", "CanvasUpdate.PreRender", "CanvasUpdate.LatePreRender" };
+        private const string m_CullingUpdateProfilerString = "ClipperRegistry.Cull";
 
         private readonly IndexedSet<ICanvasElement> m_LayoutRebuildQueue = new IndexedSet<ICanvasElement>();
         private readonly IndexedSet<ICanvasElement> m_GraphicRebuildQueue = new IndexedSet<ICanvasElement>();
@@ -162,6 +167,7 @@ namespace UnityEngine.UI
             m_LayoutRebuildQueue.Sort(s_SortLayoutFunction);
             for (int i = 0; i <= (int)CanvasUpdate.PostLayout; i++)
             {
+                UnityEngine.Profiling.Profiler.BeginSample(m_CanvasUpdateProfilerStrings[i]);
                 for (int j = 0; j < m_LayoutRebuildQueue.Count; j++)
                 {
                     var rebuild = instance.m_LayoutRebuildQueue[j];
@@ -175,6 +181,7 @@ namespace UnityEngine.UI
                         Debug.LogException(e, rebuild.transform);
                     }
                 }
+                UnityEngine.Profiling.Profiler.EndSample();
             }
 
             for (int i = 0; i < m_LayoutRebuildQueue.Count; ++i)
@@ -182,13 +189,18 @@ namespace UnityEngine.UI
 
             instance.m_LayoutRebuildQueue.Clear();
             m_PerformingLayoutUpdate = false;
+            UISystemProfilerApi.EndSample(UISystemProfilerApi.SampleType.Layout);
+            UISystemProfilerApi.BeginSample(UISystemProfilerApi.SampleType.Render);
 
             // now layout is complete do culling...
+            UnityEngine.Profiling.Profiler.BeginSample(m_CullingUpdateProfilerString);
             ClipperRegistry.instance.Cull();
+            UnityEngine.Profiling.Profiler.EndSample();
 
             m_PerformingGraphicUpdate = true;
             for (var i = (int)CanvasUpdate.PreRender; i < (int)CanvasUpdate.MaxUpdateValue; i++)
             {
+                UnityEngine.Profiling.Profiler.BeginSample(m_CanvasUpdateProfilerStrings[i]);
                 for (var k = 0; k < instance.m_GraphicRebuildQueue.Count; k++)
                 {
                     try
@@ -202,6 +214,7 @@ namespace UnityEngine.UI
                         Debug.LogException(e, instance.m_GraphicRebuildQueue[k].transform);
                     }
                 }
+                UnityEngine.Profiling.Profiler.EndSample();
             }
 
             for (int i = 0; i < m_GraphicRebuildQueue.Count; ++i)
@@ -209,7 +222,7 @@ namespace UnityEngine.UI
 
             instance.m_GraphicRebuildQueue.Clear();
             m_PerformingGraphicUpdate = false;
-            UISystemProfilerApi.EndSample(UISystemProfilerApi.SampleType.Layout);
+            UISystemProfilerApi.EndSample(UISystemProfilerApi.SampleType.Render);
         }
 
         private static int ParentCount(Transform child)
