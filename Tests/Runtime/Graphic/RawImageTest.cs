@@ -53,7 +53,6 @@ namespace Graphics
         }
 
         [UnityTest]
-        [Ignore("Fails")]
         public IEnumerator Sprite_Material()
         {
             m_image.ResetTest();
@@ -62,7 +61,7 @@ namespace Graphics
             m_image.texture = new Texture2D(Width, Height);
             yield return new WaitUntil(() => m_image.isGeometryUpdated);
 
-            // validate that layout change rebuil is called
+            // validate that layout change rebuild is called
             Assert.IsTrue(m_image.isMaterialRebuild);
         }
 
@@ -70,6 +69,9 @@ namespace Graphics
         public void TearDown()
         {
             GameObject.DestroyImmediate(m_PrefabRoot);
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
     }
 }

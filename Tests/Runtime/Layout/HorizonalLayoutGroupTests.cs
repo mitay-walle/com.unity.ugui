@@ -77,7 +77,15 @@ namespace LayoutTests
         [TearDown]
         public void TearDown()
         {
-            Object.Destroy(m_PrefabRoot);
+            GameObject.DestroyImmediate(m_PrefabRoot);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
 
         [Test]

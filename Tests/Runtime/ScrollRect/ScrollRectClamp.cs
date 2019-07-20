@@ -68,7 +68,7 @@ public class ScrollRectClamp
     [TearDown]
     public void TearDown()
     {
-        Object.Destroy(m_PrefabRoot);
+        Object.DestroyImmediate(m_PrefabRoot);
     }
 
     [UnityTest]

@@ -4,10 +4,13 @@ using UnityEngine.EventSystems;
 public class DragCallbackCheck : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     private bool loggedOnDrag = false;
+    public bool onBeginDragCalled = false;
+    public bool onDragCalled = false;
+    public bool onEndDragCalled = false;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("OnBeginDrag");
+        onBeginDragCalled = true;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -16,11 +19,11 @@ public class DragCallbackCheck : MonoBehaviour, IBeginDragHandler, IDragHandler,
             return;
 
         loggedOnDrag = true;
-        Debug.Log("OnDrag");
+        onDragCalled = true;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("OnEndDrag");
+        onEndDragCalled = true;
     }
 }

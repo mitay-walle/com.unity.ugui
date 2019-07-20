@@ -5,12 +5,16 @@ using NUnit.Framework;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 [TestFixture]
 [Category("RegressionTest")]
 public class SceneWithNestedLayoutElementsLoad : IPrebuildSetup
 {
     Scene m_InitScene;
+    const string aspectRatioFitterSceneName = "AspectRatioFitter";
+    const string contentSizeFitterSceneName = "ContentSizeFitter";
+    const string layoutGroupSceneName = "LayoutGroup";
 
     public void Setup()
     {
@@ -33,7 +37,7 @@ public class SceneWithNestedLayoutElementsLoad : IPrebuildSetup
 
             new GameObject("GameObject", typeof(SceneWithNestedLayoutElementsLoadScript));
         };
-        CreateSceneUtility.CreateScene("AspectRatioFitter", aspectRatioFitterSceneCreation);
+        CreateSceneUtility.CreateScene(aspectRatioFitterSceneName, aspectRatioFitterSceneCreation);
 
         Action contentSizeFitterSceneCreation = delegate()
         {
@@ -61,7 +65,7 @@ public class SceneWithNestedLayoutElementsLoad : IPrebuildSetup
 
             new GameObject("GameObject", typeof(SceneWithNestedLayoutElementsLoadScript));
         };
-        CreateSceneUtility.CreateScene("ContentSizeFitter", contentSizeFitterSceneCreation);
+        CreateSceneUtility.CreateScene(contentSizeFitterSceneName, contentSizeFitterSceneCreation);
 
         Action layoutGroupSceneCreation = delegate()
         {
@@ -90,53 +94,56 @@ public class SceneWithNestedLayoutElementsLoad : IPrebuildSetup
 
             new GameObject("GameObject", typeof(SceneWithNestedLayoutElementsLoadScript));
         };
-        CreateSceneUtility.CreateScene("LayoutGroup", layoutGroupSceneCreation);
+        CreateSceneUtility.CreateScene(layoutGroupSceneName, layoutGroupSceneCreation);
 #endif
     }
 
     [UnityTest]
     public IEnumerator SceneWithNestedAspectRatioFitterLoads()
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync("AspectRatioFitter", LoadSceneMode.Additive);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(aspectRatioFitterSceneName, LoadSceneMode.Additive);
         yield return operation;
 
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("AspectRatioFitter"));
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(aspectRatioFitterSceneName));
         var go = GameObject.Find("GameObject");
         var component = go.GetComponent<SceneWithNestedLayoutElementsLoadScript>();
 
         yield return new WaitUntil(() => component.isStartCalled);
 
-        SceneManager.UnloadSceneAsync("AspectRatioFitter");
+        operation = SceneManager.UnloadSceneAsync(aspectRatioFitterSceneName);
+        yield return operation;
     }
 
     [UnityTest]
     public IEnumerator SceneWithNestedContentSizeFitterLoads()
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync("ContentSizeFitter", LoadSceneMode.Additive);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(contentSizeFitterSceneName, LoadSceneMode.Additive);
         yield return operation;
 
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("ContentSizeFitter"));
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(contentSizeFitterSceneName));
         var go = GameObject.Find("GameObject");
         var component = go.GetComponent<SceneWithNestedLayoutElementsLoadScript>();
 
         yield return new WaitUntil(() => component.isStartCalled);
 
-        SceneManager.UnloadSceneAsync("ContentSizeFitter");
+        operation =  SceneManager.UnloadSceneAsync(contentSizeFitterSceneName);
+        yield return operation;
     }
 
     [UnityTest]
     public IEnumerator SceneWithNestedLayoutGroupLoads()
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync("LayoutGroup", LoadSceneMode.Additive);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(layoutGroupSceneName, LoadSceneMode.Additive);
         yield return operation;
 
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName("LayoutGroup"));
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(layoutGroupSceneName));
         var go = GameObject.Find("GameObject");
         var component = go.GetComponent<SceneWithNestedLayoutElementsLoadScript>();
 
         yield return new WaitUntil(() => component.isStartCalled);
 
-        SceneManager.UnloadSceneAsync("LayoutGroup");
+        operation = SceneManager.UnloadSceneAsync(layoutGroupSceneName);
+        yield return operation;
     }
 
     [SetUp]
@@ -149,5 +156,16 @@ public class SceneWithNestedLayoutElementsLoad : IPrebuildSetup
     public void TearDown()
     {
         SceneManager.SetActiveScene(m_InitScene);
+    }
+
+    [OneTimeTearDown]
+    public void OnTimeTearDown()
+    {
+        //Manually add Assets/ and .unity as CreateSceneUtility does that for you.
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset("Assets/" + aspectRatioFitterSceneName + ".unity");
+        AssetDatabase.DeleteAsset("Assets/" + contentSizeFitterSceneName + ".unity");
+        AssetDatabase.DeleteAsset("Assets/" + layoutGroupSceneName + ".unity");
+#endif
     }
 }

@@ -56,7 +56,7 @@ public class InputModuleTests
         m_EventSystem.gameObject.AddComponent<MouseUpdate>();
 
         // Add script to Image which implements OnBeginDrag, OnDrag & OnEndDrag callbacks
-        m_Image.gameObject.AddComponent<DragCallbackCheck>();
+        DragCallbackCheck callbackCheck = m_Image.gameObject.AddComponent<DragCallbackCheck>();
 
         // Setting required input.mousePresent to fake mouse presence
         m_FakeBaseInput.MousePresent = true;
@@ -83,9 +83,9 @@ public class InputModuleTests
 
         yield return null;
 
-        LogAssert.Expect(LogType.Log, "OnBeginDrag");
-        LogAssert.Expect(LogType.Log, "OnDrag");
-        LogAssert.Expect(LogType.Log, "OnEndDrag");
+        Assert.IsTrue(callbackCheck.onBeginDragCalled, "OnBeginDrag not called");
+        Assert.IsTrue(callbackCheck.onDragCalled, "OnDragCalled not called");
+        Assert.IsTrue(callbackCheck.onEndDragCalled, "OnEndDragCalled not called");
     }
 
     [TearDown]

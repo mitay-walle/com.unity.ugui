@@ -49,7 +49,15 @@ namespace Graphics
         public void TearDown()
         {
             m_mask = null;
-            Object.Destroy(m_PrefabRoot);
+            Object.DestroyImmediate(m_PrefabRoot);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
 
         [UnityTest]

@@ -64,7 +64,15 @@ namespace Graphics
         {
             m_graphic = null;
             m_canvas = null;
-            GameObject.Destroy(m_PrefabRoot);
+            GameObject.DestroyImmediate(m_PrefabRoot);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
 
         private void ResetDirtyFlags()

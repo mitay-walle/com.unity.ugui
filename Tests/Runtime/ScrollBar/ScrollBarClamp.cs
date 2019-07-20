@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class ScrollBarClamp : IPrebuildSetup
 {
@@ -113,6 +114,14 @@ public class ScrollBarClamp : IPrebuildSetup
     [TearDown]
     public void TearDown()
     {
-        Object.Destroy(m_PrefabRoot);
+        Object.DestroyImmediate(m_PrefabRoot);
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
     }
 }

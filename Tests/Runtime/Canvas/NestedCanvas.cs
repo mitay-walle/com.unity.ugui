@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using UnityEditor;
 
 public class NestedCanvas : IPrebuildSetup
 {
@@ -83,10 +84,18 @@ public class NestedCanvas : IPrebuildSetup
         Assert.True(image.canvasRenderer.GetInheritedAlpha() == 0.5f);
     }
 
-    [OneTimeTearDown]
-    public void OneTimeTearDown()
+    [TearDown]
+    public void TearDown()
     {
         GameObject.DestroyImmediate(m_GO1);
         GameObject.DestroyImmediate(m_GO2);
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
     }
 }

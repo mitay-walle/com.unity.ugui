@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System.Collections;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 [TestFixture]
 [UnityPlatform(include = new RuntimePlatform[] { RuntimePlatform.OSXEditor, RuntimePlatform.LinuxEditor, RuntimePlatform.WindowsEditor })]
@@ -52,6 +53,9 @@ public class NoActiveCameraInSceneDoesNotCrashEditor : IPrebuildSetup
     public void TearDown()
     {
         SceneManager.SetActiveScene(m_InitScene);
-        SceneManager.UnloadSceneAsync(k_SceneName);
+        SceneManager.UnloadScene(k_SceneName);
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset("Assets/" + k_SceneName + ".unity");
+#endif
     }
 }

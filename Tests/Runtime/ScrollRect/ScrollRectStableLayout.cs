@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using UnityEditor;
 
 /*
  This test checks if a clamped scrollRect with a content rect that has the same width and a canvas with scaling will stay stable for 5 frames.
@@ -112,6 +113,14 @@ public class ScrollRectStableLayout : IPrebuildSetup
     [TearDown]
     public void TearDown()
     {
-        Object.Destroy(m_PrefabRoot);
+        Object.DestroyImmediate(m_PrefabRoot);
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEditor;
 
 [TestFixture]
 public class RectTransformValidAfterEnable : IPrebuildSetup
@@ -32,7 +33,8 @@ public class RectTransformValidAfterEnable : IPrebuildSetup
     [UnityTest]
     public IEnumerator CheckRectTransformValidAfterEnable()
     {
-        yield return SceneManager.LoadSceneAsync(kSceneName, LoadSceneMode.Additive);
+        AsyncOperation operation = SceneManager.LoadSceneAsync(kSceneName, LoadSceneMode.Additive);
+        yield return operation;
 
         Scene scene = SceneManager.GetSceneByName(kSceneName);
         GameObject[] gameObjects = scene.GetRootGameObjects();
@@ -56,6 +58,16 @@ public class RectTransformValidAfterEnable : IPrebuildSetup
         Assert.Greater(rect.width, 0);
         Assert.Greater(rect.height, 0);
 
-        yield return SceneManager.UnloadSceneAsync(kSceneName);
+        operation = SceneManager.UnloadSceneAsync(kSceneName);
+        yield return operation;
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        //Manually add Assets/ and .unity as CreateSceneUtility does that for you.
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset("Assets/" + kSceneName + ".unity");
+#endif
     }
 }

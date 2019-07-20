@@ -71,6 +71,15 @@ public class ScrollRectTests : IPrebuildSetup
     public void TearDown()
     {
         EventSystem.current = null;
+        GameObject.DestroyImmediate(m_PrefabRoot);
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
     }
 
     #region Enable disable scrollbars

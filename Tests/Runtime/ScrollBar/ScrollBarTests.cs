@@ -56,6 +56,9 @@ public class ScrollBarTests : IPrebuildSetup
     [TearDown]
     public void TearDown()
     {
-        GameObject.Destroy(m_PrefabRoot);
+        GameObject.DestroyImmediate(m_PrefabRoot);
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
     }
 }

@@ -89,12 +89,20 @@ namespace LayoutTests
             m_LayoutGroup = m_PrefabRoot.GetComponentInChildren<VerticalLayoutGroup>();
         }
 
-        [TearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             EventSystem.current = null;
             m_LayoutGroup = null;
-            Object.Destroy(m_PrefabRoot);
+            Object.DestroyImmediate(m_PrefabRoot);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
 
         [Test]
