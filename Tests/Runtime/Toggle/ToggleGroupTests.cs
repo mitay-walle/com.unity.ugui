@@ -115,5 +115,18 @@ namespace ToggleTest
             Assert.IsFalse(m_toggle[0].isOn);
             Assert.IsFalse(m_toggle[1].isOn);
         }
+
+        [TestCase(0)]
+        [TestCase(1)]
+        public void ReEnablingGameObjectWithToggleGroupRetainsPreviouslySelectedToggle(int toggleIndex)
+        {
+            m_toggle[0].group = m_toggleGroup;
+            m_toggle[1].group = m_toggleGroup;
+
+            m_toggle[toggleIndex].isOn = true;
+            m_PrefabRoot.SetActive(false);
+            m_PrefabRoot.SetActive(true);
+            Assert.IsTrue(m_toggle[toggleIndex].isOn);
+        }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 namespace UnityEngine.UI
 {
     [AddComponentMenu("UI/Slider", 33)]
-    [ExecuteInEditMode]
+    [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     /// <summary>
     /// A standard slider that can be moved between a minimum and maximum value.
