@@ -133,6 +133,14 @@ public class DropdownTests : IPrebuildSetup
     [TearDown]
     public void TearDown()
     {
-        Object.Destroy(m_PrefabRoot);
+        Object.DestroyImmediate(m_PrefabRoot);
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
     }
 }

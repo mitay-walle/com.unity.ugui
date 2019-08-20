@@ -4,6 +4,7 @@ using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class ScrollRectScale : IPrebuildSetup
 {
@@ -96,5 +97,8 @@ public class ScrollRectScale : IPrebuildSetup
     public void TearDown()
     {
         GameObject.DestroyImmediate(m_CanvasGO);
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
     }
 }

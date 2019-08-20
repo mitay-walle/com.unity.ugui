@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 
 [TestFixture]
 public class CanvasSizeCorrectInAwakeAndStart : IPrebuildSetup
@@ -55,6 +56,9 @@ public class CanvasSizeCorrectInAwakeAndStart : IPrebuildSetup
     {
         GameObject.DestroyImmediate(m_CanvasGameObject);
         SceneManager.SetActiveScene(m_InitScene);
-        SceneManager.UnloadSceneAsync(k_SceneName);
+        SceneManager.UnloadScene(k_SceneName);
+#if UNITY_EDITOR
+        AssetDatabase.DeleteAsset("Assets/" + k_SceneName + ".unity");
+#endif
     }
 }

@@ -85,7 +85,15 @@ namespace LayoutTests
             m_PrefabRoot = null;
             m_ContentSizeFitter = null;
             m_RectTransform = null;
-            Object.Destroy(m_PrefabRoot);
+            GameObject.DestroyImmediate(m_PrefabRoot);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
 
         [Test]

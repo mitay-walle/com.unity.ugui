@@ -1,6 +1,7 @@
 using System.Collections;
 using System.IO;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -86,7 +87,15 @@ namespace LayoutTests
         [TearDown]
         public void TearDown()
         {
-            Object.Destroy(m_PrefabRoot);
+            Object.DestroyImmediate(m_PrefabRoot);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
     }
 }

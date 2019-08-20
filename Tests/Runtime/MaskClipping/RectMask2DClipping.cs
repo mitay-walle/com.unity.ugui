@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.TestTools;
 using NUnit.Framework;
 using System.Collections;
+using UnityEditor;
 
 /*
  This test checks that a maskableGraphic within a RectMask2D will be properly clipped.
@@ -75,7 +76,15 @@ namespace Graphics
         [TearDown]
         public void TearDown()
         {
-            Object.Destroy(m_PrefabRoot);
+            Object.DestroyImmediate(m_PrefabRoot);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+#if UNITY_EDITOR
+            AssetDatabase.DeleteAsset(kPrefabPath);
+#endif
         }
     }
 }
