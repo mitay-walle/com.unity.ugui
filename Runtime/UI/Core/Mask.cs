@@ -77,10 +77,6 @@ namespace UnityEngine.UI
             {
                 graphic.canvasRenderer.hasPopInstruction = true;
                 graphic.SetMaterialDirty();
-
-                // Default the graphic to being the maskable graphic if its found.
-                if (graphic is MaskableGraphic)
-                    (graphic as MaskableGraphic).isMaskingGraphic = true;
             }
 
             MaskUtilities.NotifyStencilStateChanged(this);
@@ -98,9 +94,6 @@ namespace UnityEngine.UI
                 graphic.SetMaterialDirty();
                 graphic.canvasRenderer.hasPopInstruction = false;
                 graphic.canvasRenderer.popMaterialCount = 0;
-
-                if (graphic is MaskableGraphic)
-                    (graphic as MaskableGraphic).isMaskingGraphic = false;
             }
 
             StencilMaterial.Remove(m_MaskMaterial);
@@ -120,13 +113,7 @@ namespace UnityEngine.UI
                 return;
 
             if (graphic != null)
-            {
-                // Default the graphic to being the maskable graphic if its found.
-                if (graphic is MaskableGraphic)
-                    (graphic as MaskableGraphic).isMaskingGraphic = true;
-
                 graphic.SetMaterialDirty();
-            }
 
             MaskUtilities.NotifyStencilStateChanged(this);
         }

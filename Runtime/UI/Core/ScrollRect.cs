@@ -1404,8 +1404,6 @@ namespace UnityEngine.UI
 
             CanvasUpdateRegistry.RegisterCanvasElementForLayoutRebuild(this);
             LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
-
-            m_ViewRect = null;
         }
 
         #if UNITY_EDITOR

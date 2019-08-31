@@ -196,7 +196,7 @@ namespace UnityEngine.UI
                         ? Mathf.Infinity
                         : Mathf.Abs((currentEventCamera.farClipPlane - currentEventCamera.nearClipPlane) / projectionDirection);
                 }
-#if PACKAGE_PHYSICS
+
                 if (blockingObjects == BlockingObjects.ThreeD || blockingObjects == BlockingObjects.All)
                 {
                     if (ReflectionMethodsCache.Singleton.raycast3D != null)
@@ -206,8 +206,7 @@ namespace UnityEngine.UI
                             hitDistance = hits[0].distance;
                     }
                 }
-#endif
-#if PACKAGE_PHYSICS2D
+
                 if (blockingObjects == BlockingObjects.TwoD || blockingObjects == BlockingObjects.All)
                 {
                     if (ReflectionMethodsCache.Singleton.raycast2D != null)
@@ -217,7 +216,6 @@ namespace UnityEngine.UI
                             hitDistance = hits[0].distance;
                     }
                 }
-#endif
             }
 
             m_RaycastResults.Clear();
@@ -241,8 +239,9 @@ namespace UnityEngine.UI
                     else
                     {
                         // If we have a camera compare the direction against the cameras forward.
-                        var cameraForward = currentEventCamera.transform.rotation * Vector3.forward * currentEventCamera.nearClipPlane;
-                        appendGraphic = Vector3.Dot(go.transform.position - currentEventCamera.transform.position - cameraForward, go.transform.forward) >= 0;
+                        var cameraFoward = currentEventCamera.transform.rotation * Vector3.forward;
+                        var dir = go.transform.rotation * Vector3.forward;
+                        appendGraphic = Vector3.Dot(cameraFoward, dir) > 0;
                     }
                 }
 
@@ -273,7 +272,6 @@ namespace UnityEngine.UI
                         module = this,
                         distance = distance,
                         screenPosition = eventPosition,
-                        displayIndex = displayIndex,
                         index = resultAppendList.Count,
                         depth = m_RaycastResults[index].depth,
                         sortingLayer = canvas.sortingLayerID,
@@ -318,7 +316,7 @@ namespace UnityEngine.UI
                 Graphic graphic = foundGraphics[i];
 
                 // -1 means it hasn't been processed by the canvas, which means it isn't actually drawn
-                if (!graphic.raycastTarget || graphic.canvasRenderer.cull || graphic.depth == -1)
+                if (graphic.depth == -1 || !graphic.raycastTarget || graphic.canvasRenderer.cull)
                     continue;
 
                 if (!RectTransformUtility.RectangleContainsScreenPoint(graphic.rectTransform, pointerPosition, eventCamera))

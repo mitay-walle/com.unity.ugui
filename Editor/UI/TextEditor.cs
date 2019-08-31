@@ -30,7 +30,6 @@ namespace UnityEditor.UI
 
             AppearanceControlsGUI();
             RaycastControlsGUI();
-            MaskableControlsGUI();
             serializedObject.ApplyModifiedProperties();
         }
     }

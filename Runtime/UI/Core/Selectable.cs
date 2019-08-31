@@ -20,9 +20,11 @@ namespace UnityEngine.UI
         IPointerEnterHandler, IPointerExitHandler,
         ISelectHandler, IDeselectHandler
     {
-        protected static Selectable[] s_Selectables = new Selectable[10];
-        protected static int s_SelectableCount = 0;
-        private bool m_EnableCalled = false;
+        private static Selectable[] s_Selectables = new Selectable[10];
+        private static int s_SelectableCount = 0;
+
+        // If any selectable in s_Selectables are to be removed
+        private static bool s_IsDirty = false;
 
         /// <summary>
         /// Copy of the array of all the selectable objects currently active in the scene.
@@ -50,6 +52,9 @@ namespace UnityEngine.UI
         {
             get
             {
+                if (s_IsDirty)
+                    RemoveInvalidSelectables();
+
                 Selectable[] temp = new Selectable[s_SelectableCount];
                 Array.Copy(s_Selectables, temp, s_SelectableCount);
                 return temp;
@@ -110,6 +115,9 @@ namespace UnityEngine.UI
         /// </example>
         public static int AllSelectablesNoAlloc(Selectable[] selectables)
         {
+            if (s_IsDirty)
+                RemoveInvalidSelectables();
+
             int copyCount = selectables.Length < s_SelectableCount ? selectables.Length : s_SelectableCount;
 
             Array.Copy(s_Selectables, selectables, copyCount);
@@ -179,7 +187,7 @@ namespace UnityEngine.UI
 
 
         private bool m_GroupsAllowInteraction = true;
-        protected int m_CurrentIndex = -1;
+        private bool m_WillRemove = false;
 
         /// <summary>
         /// The Navigation setting for this selectable object.
@@ -393,12 +401,10 @@ namespace UnityEngine.UI
         /// }
         /// </code>
         /// </example>
-#if PACKAGE_ANIMATION
         public Animator animator
         {
             get { return GetComponent<Animator>(); }
         }
-#endif
 
         protected override void Awake()
         {
@@ -482,11 +488,12 @@ namespace UnityEngine.UI
         // Select on enable and add to the list.
         protected override void OnEnable()
         {
-            //Check to avoid multiple OnEnable() calls for each selectable
-            if (m_EnableCalled)
-                return;
-
             base.OnEnable();
+
+            if (s_IsDirty)
+                RemoveInvalidSelectables();
+
+            m_WillRemove = false;
 
             if (s_SelectableCount == s_Selectables.Length)
             {
@@ -494,13 +501,9 @@ namespace UnityEngine.UI
                 Array.Copy(s_Selectables, temp, s_Selectables.Length);
                 s_Selectables = temp;
             }
-            m_CurrentIndex = s_SelectableCount;
-            s_Selectables[m_CurrentIndex] = this;
-            s_SelectableCount++;
+            s_Selectables[s_SelectableCount++] = this;
             isPointerDown = false;
             DoStateTransition(currentSelectionState, true);
-
-            m_EnableCalled = true;
         }
 
         protected override void OnTransformParentChanged()
@@ -524,25 +527,22 @@ namespace UnityEngine.UI
         // Remove from the list.
         protected override void OnDisable()
         {
-            //Check to avoid multiple OnDisable() calls for each selectable
-            if (!m_EnableCalled)
-                return;
-
-            s_SelectableCount--;
-
-            // Update the last elements index to be this index
-            s_Selectables[s_SelectableCount].m_CurrentIndex = m_CurrentIndex;
-
-            // Swap the last element and this element
-            s_Selectables[m_CurrentIndex] = s_Selectables[s_SelectableCount];
-
-            // null out last element.
-            s_Selectables[s_SelectableCount] = null;
+            m_WillRemove = true;
+            s_IsDirty = true;
 
             InstantClearState();
             base.OnDisable();
+        }
 
-            m_EnableCalled = false;
+        private static void RemoveInvalidSelectables()
+        {
+            for (int i = s_SelectableCount - 1; i >= 0; --i)
+            {
+                // Swap last element in array with element to be removed
+                if (s_Selectables[i] == null || s_Selectables[i].m_WillRemove)
+                    s_Selectables[i] = s_Selectables[--s_SelectableCount];
+            }
+            s_IsDirty = false;
         }
 
 #if UNITY_EDITOR
@@ -750,6 +750,9 @@ namespace UnityEngine.UI
             Vector3 pos = transform.TransformPoint(GetPointOnRectEdge(transform as RectTransform, localDir));
             float maxScore = Mathf.NegativeInfinity;
             Selectable bestPick = null;
+
+            if (s_IsDirty)
+                RemoveInvalidSelectables();
 
             for (int i = 0; i < s_SelectableCount; ++i)
             {
@@ -1036,7 +1039,6 @@ namespace UnityEngine.UI
 
         void TriggerAnimation(string triggername)
         {
-#if PACKAGE_ANIMATION
             if (transition != Transition.Animation || animator == null || !animator.isActiveAndEnabled || !animator.hasBoundPlayables || string.IsNullOrEmpty(triggername))
                 return;
 
@@ -1047,7 +1049,6 @@ namespace UnityEngine.UI
             animator.ResetTrigger(m_AnimationTriggers.disabledTrigger);
 
             animator.SetTrigger(triggername);
-#endif
         }
 
         /// <summary>

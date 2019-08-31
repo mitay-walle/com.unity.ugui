@@ -88,7 +88,6 @@ namespace UnityEditor.UI
             SpriteGUI();
             AppearanceControlsGUI();
             RaycastControlsGUI();
-            MaskableControlsGUI();
 
             m_ShowType.target = m_Sprite.objectReferenceValue != null;
             if (EditorGUILayout.BeginFadeGroup(m_ShowType.faded))

@@ -58,21 +58,8 @@ namespace UnityEditor.UI
                     }
                 }
 
-
-                EditorGUI.BeginChangeCheck();
-                float newMin = EditorGUILayout.FloatField("Min Value", m_MinValue.floatValue);
-                if (EditorGUI.EndChangeCheck() && newMin <= m_MaxValue.floatValue)
-                {
-                    m_MinValue.floatValue = newMin;
-                }
-
-                EditorGUI.BeginChangeCheck();
-                float newMax = EditorGUILayout.FloatField("Max Value", m_MaxValue.floatValue);
-                if (EditorGUI.EndChangeCheck() && newMax >= m_MinValue.floatValue)
-                {
-                    m_MaxValue.floatValue = newMax;
-                }
-
+                EditorGUILayout.PropertyField(m_MinValue);
+                EditorGUILayout.PropertyField(m_MaxValue);
                 EditorGUILayout.PropertyField(m_WholeNumbers);
                 EditorGUILayout.Slider(m_Value, m_MinValue.floatValue, m_MaxValue.floatValue);
 

@@ -24,10 +24,8 @@ namespace UnityEngine.UI
         // m_IncludeForMasking is whether we actually consider this graphic for masking or not - this is an implementation detail.
         // m_IncludeForMasking should only be true if m_Maskable is true AND a parent of the graphic has an IMask component.
         // Things would still work correctly if m_IncludeForMasking was always true when m_Maskable is, but performance would suffer.
-        [SerializeField]
+        [NonSerialized]
         private bool m_Maskable = true;
-
-        private bool m_IsMaskingGraphic = false;
 
         [NonSerialized]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -69,18 +67,6 @@ namespace UnityEngine.UI
             }
         }
 
-        public bool isMaskingGraphic
-        {
-            get { return m_IsMaskingGraphic; }
-            set
-            {
-                if (value == m_IsMaskingGraphic)
-                    return;
-
-                m_IsMaskingGraphic = value;
-            }
-        }
-
         [NonSerialized]
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         [Obsolete("Not used anymore", true)]
@@ -104,9 +90,10 @@ namespace UnityEngine.UI
             }
 
             // if we have a enabled Mask component then it will
-            // generate the mask material. This is an optimization
+            // generate the mask material. This is an optimisation
             // it adds some coupling between components though :(
-            if (m_StencilValue > 0 && !isMaskingGraphic)
+            Mask maskComponent = GetComponent<Mask>();
+            if (m_StencilValue > 0 && (maskComponent == null || !maskComponent.IsActive()))
             {
                 var maskMat = StencilMaterial.Add(toUse, (1 << m_StencilValue) - 1, StencilOp.Keep, CompareFunction.Equal, ColorWriteMask.All, (1 << m_StencilValue) - 1, 0);
                 StencilMaterial.Remove(m_MaskMaterial);
@@ -147,11 +134,6 @@ namespace UnityEngine.UI
                 canvasRenderer.DisableRectClipping();
         }
 
-        public virtual void SetClipSoftness(Vector2 clipSoftness)
-        {
-            canvasRenderer.clippingSoftness = clipSoftness;
-        }
-
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -159,7 +141,7 @@ namespace UnityEngine.UI
             UpdateClipParent();
             SetMaterialDirty();
 
-            if (isMaskingGraphic)
+            if (GetComponent<Mask>() != null)
             {
                 MaskUtilities.NotifyStencilStateChanged(this);
             }
@@ -174,7 +156,7 @@ namespace UnityEngine.UI
             StencilMaterial.Remove(m_MaskMaterial);
             m_MaskMaterial = null;
 
-            if (isMaskingGraphic)
+            if (GetComponent<Mask>() != null)
             {
                 MaskUtilities.NotifyStencilStateChanged(this);
             }

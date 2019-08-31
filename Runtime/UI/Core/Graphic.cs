@@ -374,6 +374,10 @@ namespace UnityEngine.UI
                         m_Canvas = list[i];
                         break;
                     }
+
+                    // if we reached the end and couldn't find an active and enabled canvas, we should return null . case 1171433
+                    if (i == list.Count - 1)
+                        m_Canvas = null;
                 }
             }
             else

@@ -307,12 +307,8 @@ namespace UnityEngine.UI
             if (m_ContainerRect == null)
                 return;
 
-            Vector2 position = Vector2.zero;
-            if (!MultipleDisplayUtilities.GetRelativeMousePositionForDrag(eventData, ref position))
-                return;
-
             Vector2 localCursor;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(m_ContainerRect, position, eventData.pressEventCamera, out localCursor))
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(m_ContainerRect, eventData.position, eventData.pressEventCamera, out localCursor))
                 return;
 
             Vector2 handleCenterRelativeToContainerCorner = localCursor - m_Offset - m_ContainerRect.rect.position;
@@ -365,10 +361,10 @@ namespace UnityEngine.UI
                 return;
 
             m_Offset = Vector2.zero;
-            if (RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, eventData.pointerPressRaycast.screenPosition, eventData.enterEventCamera))
+            if (RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, eventData.position, eventData.enterEventCamera))
             {
                 Vector2 localMousePos;
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.pointerPressRaycast.screenPosition, eventData.pressEventCamera, out localMousePos))
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.position, eventData.pressEventCamera, out localMousePos))
                     m_Offset = localMousePos - m_HandleRect.rect.center;
             }
         }
@@ -395,25 +391,20 @@ namespace UnityEngine.UI
 
             base.OnPointerDown(eventData);
             isPointerDownAndNotDragging = true;
-            m_PointerDownRepeat = StartCoroutine(ClickRepeat(eventData.pointerPressRaycast.screenPosition, eventData.enterEventCamera));
-        }
-
-        protected IEnumerator ClickRepeat(PointerEventData eventData)
-        {
-            return ClickRepeat(eventData.pointerPressRaycast.screenPosition, eventData.enterEventCamera);
+            m_PointerDownRepeat = StartCoroutine(ClickRepeat(eventData));
         }
 
         /// <summary>
         /// Coroutine function for handling continual press during Scrollbar.OnPointerDown.
         /// </summary>
-        protected IEnumerator ClickRepeat(Vector2 screenPosition, Camera camera)
+        protected IEnumerator ClickRepeat(PointerEventData eventData)
         {
             while (isPointerDownAndNotDragging)
             {
-                if (!RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, screenPosition, camera))
+                if (!RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, eventData.position, eventData.enterEventCamera))
                 {
                     Vector2 localMousePos;
-                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, screenPosition, camera, out localMousePos))
+                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.position, eventData.pressEventCamera, out localMousePos))
                     {
                         var axisCoordinate = axis == 0 ? localMousePos.x : localMousePos.y;
 

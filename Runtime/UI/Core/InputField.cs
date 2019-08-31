@@ -275,9 +275,6 @@ namespace UnityEngine.UI
         [SerializeField]
         private bool m_ReadOnly = false;
 
-        [SerializeField]
-        private bool m_ShouldActivateOnSelect = true;
-
         protected int m_CaretPosition = 0;
         protected int m_CaretSelectPosition = 0;
         private RectTransform caretRectTrans = null;
@@ -389,19 +386,11 @@ namespace UnityEngine.UI
             }
         }
 
-        /// <summary>
-        /// Should the inputfield be automatically activated upon selection.
-        /// </summary>
-
-        public virtual bool shouldActivateOnSelect
+        bool shouldActivateOnSelect
         {
-            set
-            {
-                m_ShouldActivateOnSelect = value;
-            }
             get
             {
-                return m_ShouldActivateOnSelect && Application.platform != RuntimePlatform.tvOS;
+                return Application.platform != RuntimePlatform.tvOS;
             }
         }
 
@@ -1378,9 +1367,7 @@ namespace UnityEngine.UI
             }
             else if (m_HideMobileInput && m_Keyboard.canSetSelection)
             {
-                var selectionStart = Mathf.Min(caretSelectPositionInternal, caretPositionInternal);
-                var selectionLength = Mathf.Abs(caretSelectPositionInternal - caretPositionInternal);
-                m_Keyboard.selection = new RangeInt(selectionStart, selectionLength);
+                m_Keyboard.selection = new RangeInt(caretPositionInternal, caretSelectPositionInternal - caretPositionInternal);
             }
             else if (m_Keyboard.canGetSelection && !m_HideMobileInput)
             {
@@ -1523,12 +1510,8 @@ namespace UnityEngine.UI
             if (!MayDrag(eventData))
                 return;
 
-            Vector2 position = Vector2.zero;
-            if (!MultipleDisplayUtilities.GetRelativeMousePositionForDrag(eventData, ref position))
-                return;
-
             Vector2 localMousePos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(textComponent.rectTransform, position, eventData.pressEventCamera, out localMousePos);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(textComponent.rectTransform, eventData.position, eventData.pressEventCamera, out localMousePos);
             caretSelectPositionInternal = GetCharacterIndexFromPosition(localMousePos) + m_DrawStart;
 
             MarkGeometryAsDirty();
@@ -1544,12 +1527,8 @@ namespace UnityEngine.UI
         {
             while (m_UpdateDrag && m_DragPositionOutOfBounds)
             {
-                Vector2 position = Vector2.zero;
-                if (!MultipleDisplayUtilities.GetRelativeMousePositionForDrag(eventData, ref position))
-                    break;
-
                 Vector2 localMousePos;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(textComponent.rectTransform, position, eventData.pressEventCamera, out localMousePos);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(textComponent.rectTransform, eventData.position, eventData.pressEventCamera, out localMousePos);
 
                 Rect rect = textComponent.rectTransform.rect;
 
@@ -1617,8 +1596,7 @@ namespace UnityEngine.UI
             if (hadFocusBefore)
             {
                 Vector2 localMousePos;
-
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(textComponent.rectTransform, eventData.pointerPressRaycast.screenPosition, eventData.pressEventCamera, out localMousePos);
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(textComponent.rectTransform, eventData.position, eventData.pressEventCamera, out localMousePos);
                 caretSelectPositionInternal = caretPositionInternal = GetCharacterIndexFromPosition(localMousePos) + m_DrawStart;
             }
 
@@ -2264,7 +2242,7 @@ namespace UnityEngine.UI
                 m_PreventFontCallback = true;
 
                 string fullText;
-                if (EventSystem.current != null && gameObject == EventSystem.current.currentSelectedGameObject && compositionString.Length > 0)
+                if (compositionString.Length > 0)
                     fullText = text.Substring(0, m_CaretPosition) + compositionString + text.Substring(m_CaretPosition);
                 else
                     fullText = text;
@@ -2645,19 +2623,8 @@ namespace UnityEngine.UI
             if (displayIndex > 0 && displayIndex < Display.displays.Length)
                 screenHeight = Display.displays[displayIndex].renderingHeight;
 
-            // Calculate position of IME Window in screen space.
-            Camera cameraRef;
-            if (m_TextComponent.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-                cameraRef = null;
-            else
-                cameraRef = m_TextComponent.canvas.worldCamera;
-
-            Vector3 cursorPosition = m_CachedInputRenderer.gameObject.transform.TransformPoint(m_CursorVerts[0].position);
-            Vector2 screenPosition = RectTransformUtility.WorldToScreenPoint(cameraRef, cursorPosition);
-            screenPosition.y = screenHeight - screenPosition.y;
-
-            if (input != null)
-                input.compositionCursorPos = screenPosition;
+            startPosition.y = screenHeight - startPosition.y;
+            input.compositionCursorPos = startPosition;
         }
 
         private void CreateCursorVerts()
@@ -2899,10 +2866,11 @@ namespace UnityEngine.UI
 
             if (TouchScreenKeyboard.isSupported)
             {
-                if (input != null && input.touchSupported)
+                if (input.touchSupported)
                 {
                     TouchScreenKeyboard.hideInput = shouldHideMobileInput;
                 }
+
                 m_Keyboard = (inputType == InputType.Password) ?
                     TouchScreenKeyboard.Open(m_Text, keyboardType, false, multiLine, true, false, "", characterLimit) :
                     TouchScreenKeyboard.Open(m_Text, keyboardType, inputType == InputType.AutoCorrect, multiLine, false, false, "", characterLimit);
@@ -2922,10 +2890,10 @@ namespace UnityEngine.UI
             // Perform normal OnFocus routine if platform supports it
             if (!TouchScreenKeyboard.isSupported || m_TouchKeyboardAllowsInPlaceEditing)
             {
-                if (input != null)
-                    input.imeCompositionMode = IMECompositionMode.On;
+                input.imeCompositionMode = IMECompositionMode.On;
                 OnFocus();
             }
+
             m_AllowInput = true;
             m_OriginalText = text;
             m_WasCanceled = false;
@@ -3004,8 +2972,8 @@ namespace UnityEngine.UI
                 }
 
                 m_CaretPosition = m_CaretSelectPosition = 0;
-                if (input != null)
-                    input.imeCompositionMode = IMECompositionMode.Auto;
+
+                input.imeCompositionMode = IMECompositionMode.Auto;
             }
 
             MarkGeometryAsDirty();

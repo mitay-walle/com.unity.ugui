@@ -60,7 +60,8 @@ namespace UnityEngine.UI
             get { return m_Group; }
             set
             {
-                SetToggleGroup(value, true);
+                m_Group = value;
+                SetToggleGroup(m_Group, true);
                 PlayEffect(true);
             }
         }

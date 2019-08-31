@@ -150,16 +150,10 @@ namespace UnityEngine.EventSystems
 
             if (Mathf.Abs(x) > Mathf.Abs(y))
             {
-                if (x > 0)
-                    return MoveDirection.Right;
-                return MoveDirection.Left;
+                return x > 0 ? MoveDirection.Right : MoveDirection.Left;
             }
-            else
-            {
-                if (y > 0)
-                    return MoveDirection.Up;
-                return MoveDirection.Down;
-            }
+
+            return y > 0 ? MoveDirection.Up : MoveDirection.Down;
         }
 
         /// <summary>

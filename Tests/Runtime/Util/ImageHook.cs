@@ -11,13 +11,14 @@ namespace UnityEngine.UI.Tests
         public bool isGeometryUpdated;
         public bool isLayoutRebuild;
         public bool isMaterialRebuilt;
-        public Rect cachedClipRect;
+        public bool isCacheUsed;
 
         public void ResetTest()
         {
             isGeometryUpdated = false;
             isLayoutRebuild = false;
             isMaterialRebuilt = false;
+            isCacheUsed = false;
         }
 
         public override void SetLayoutDirty()
@@ -36,15 +37,8 @@ namespace UnityEngine.UI.Tests
         {
             base.UpdateGeometry();
             isGeometryUpdated = true;
-        }
-
-        public override void SetClipRect(Rect clipRect, bool validRect)
-        {
-            cachedClipRect = clipRect;
-            if (validRect)
-                canvasRenderer.EnableRectClipping(clipRect);
-            else
-                canvasRenderer.DisableRectClipping();
+            FieldInfo fieldInfo = typeof(Image).GetField("m_UseCache", BindingFlags.Instance | BindingFlags.NonPublic);
+            isCacheUsed = (bool)fieldInfo.GetValue(gameObject.GetComponent<ImageHook>());
         }
     }
 }

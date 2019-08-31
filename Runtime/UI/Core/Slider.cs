@@ -246,9 +246,7 @@ namespace UnityEngine.UI
         {
             get
             {
-                if (wholeNumbers)
-                    return Mathf.Round(m_Value);
-                return m_Value;
+                return wholeNumbers ? Mathf.Round(m_Value) : m_Value;
             }
             set
             {
@@ -372,6 +370,7 @@ namespace UnityEngine.UI
             if (IsActive())
             {
                 UpdateCachedReferences();
+                Set(m_Value, false);
                 // Update rects in next update since other things might affect them even if value didn't change.
                 m_DelayedUpdateVisuals = true;
             }
@@ -426,7 +425,6 @@ namespace UnityEngine.UI
             if (m_DelayedUpdateVisuals)
             {
                 m_DelayedUpdateVisuals = false;
-                Set(m_Value, false);
                 UpdateVisuals();
             }
         }
@@ -588,12 +586,8 @@ namespace UnityEngine.UI
             RectTransform clickRect = m_HandleContainerRect ?? m_FillContainerRect;
             if (clickRect != null && clickRect.rect.size[(int)axis] > 0)
             {
-                Vector2 position = Vector2.zero;
-                if (!MultipleDisplayUtilities.GetRelativeMousePositionForDrag(eventData, ref position))
-                    return;
-
                 Vector2 localCursor;
-                if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(clickRect, position, cam, out localCursor))
+                if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(clickRect, eventData.position, cam, out localCursor))
                     return;
                 localCursor -= clickRect.rect.position;
 
@@ -615,10 +609,10 @@ namespace UnityEngine.UI
             base.OnPointerDown(eventData);
 
             m_Offset = Vector2.zero;
-            if (m_HandleContainerRect != null && RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, eventData.pointerPressRaycast.screenPosition, eventData.enterEventCamera))
+            if (m_HandleContainerRect != null && RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, eventData.position, eventData.enterEventCamera))
             {
                 Vector2 localMousePos;
-                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.pointerPressRaycast.screenPosition, eventData.pressEventCamera, out localMousePos))
+                if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.position, eventData.pressEventCamera, out localMousePos))
                     m_Offset = localMousePos;
             }
             else

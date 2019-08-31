@@ -1822,14 +1822,12 @@ namespace UnityEngine.UI
                 {
                     float lerp = Mathf.InverseLerp(adjustedBorder[i], rect.size[i] - adjustedBorder[i + 2], local[i]);
                     local[i] = Mathf.Lerp(border[i], spriteRect.size[i] - border[i + 2], lerp);
-                    continue;
                 }
                 else
                 {
                     local[i] -= adjustedBorder[i];
                     local[i] = Mathf.Repeat(local[i], spriteRect.size[i] - border[i] - border[i + 2]);
                     local[i] += border[i];
-                    continue;
                 }
             }
 
@@ -1845,7 +1843,7 @@ namespace UnityEngine.UI
             for (var i = m_TrackedTexturelessImages.Count - 1; i >= 0; i--)
             {
                 var g = m_TrackedTexturelessImages[i];
-                if (null != g.activeSprite && spriteAtlas.CanBindTo(g.activeSprite))
+                if (spriteAtlas.CanBindTo(g.activeSprite))
                 {
                     g.SetAllDirty();
                     m_TrackedTexturelessImages.RemoveAt(i);

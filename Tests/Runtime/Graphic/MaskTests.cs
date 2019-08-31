@@ -145,14 +145,5 @@ namespace Graphics
                 Assert.IsTrue(modifiedMaterial.IsKeywordEnabled("UNITY_UI_ALPHACLIP"));
             }
         }
-
-        [Test]
-        public void GraphicComponentWithMaskIsMarkedAsIsMaskingGraphicWhenEnabled()
-        {
-            var graphic = m_PrefabRoot.GetComponentInChildren<Image>();
-            Assert.AreEqual(true, graphic.isMaskingGraphic);
-            m_mask.enabled = false;
-            Assert.AreEqual(false, graphic.isMaskingGraphic);
-        }
     }
 }
