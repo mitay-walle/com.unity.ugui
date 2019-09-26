@@ -239,9 +239,7 @@ namespace UnityEngine.UI
                     else
                     {
                         // If we have a camera compare the direction against the cameras forward.
-                        var cameraFoward = currentEventCamera.transform.rotation * Vector3.forward;
-                        var dir = go.transform.rotation * Vector3.forward;
-                        appendGraphic = Vector3.Dot(cameraFoward, dir) > 0;
+                        appendGraphic = Vector3.Dot(go.transform.position - currentEventCamera.transform.position, go.transform.forward) > 0;
                     }
                 }
 
@@ -272,6 +270,7 @@ namespace UnityEngine.UI
                         module = this,
                         distance = distance,
                         screenPosition = eventPosition,
+                        displayIndex = displayIndex,
                         index = resultAppendList.Count,
                         depth = m_RaycastResults[index].depth,
                         sortingLayer = canvas.sortingLayerID,

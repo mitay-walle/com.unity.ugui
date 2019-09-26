@@ -25,7 +25,8 @@ namespace UnityEngine.EventSystems
         {
             Ray ray = new Ray();
             float distanceToClipPlane = 0;
-            if (!ComputeRayAndDistance(eventData, ref ray, ref distanceToClipPlane))
+            int displayIndex = 0;
+            if (!ComputeRayAndDistance(eventData, ref ray, ref displayIndex, ref distanceToClipPlane))
                 return;
 
             int hitCount = 0;
@@ -66,6 +67,7 @@ namespace UnityEngine.EventSystems
                         worldPosition = m_Hits[b].point,
                         worldNormal = m_Hits[b].normal,
                         screenPosition = eventData.position,
+                        displayIndex = displayIndex,
                         index = resultAppendList.Count,
                         sortingLayer =  sr != null ? sr.sortingLayerID : 0,
                         sortingOrder = sr != null ? sr.sortingOrder : 0
