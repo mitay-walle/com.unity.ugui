@@ -72,6 +72,11 @@ namespace UnityEngine.EventSystems
         public Vector2 screenPosition;
 
         /// <summary>
+        /// The display index from which the raycast was generated.
+        /// </summary>
+        public int displayIndex;
+
+        /// <summary>
         /// Is there an associated module and a hit GameObject.
         /// </summary>
         public bool isValid
@@ -93,7 +98,7 @@ namespace UnityEngine.EventSystems
             sortingOrder = 0;
             worldNormal = Vector3.up;
             worldPosition = Vector3.zero;
-            screenPosition = Vector2.zero;
+            screenPosition = Vector3.zero;
         }
 
         public override string ToString()
