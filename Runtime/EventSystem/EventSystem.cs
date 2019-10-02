@@ -298,10 +298,7 @@ namespace UnityEngine.EventSystems
         /// </example>
         public bool IsPointerOverGameObject(int pointerId)
         {
-            if (m_CurrentInputModule == null)
-                return false;
-
-            return m_CurrentInputModule.IsPointerOverGameObject(pointerId);
+            return m_CurrentInputModule != null && m_CurrentInputModule.IsPointerOverGameObject(pointerId);
         }
 
         protected override void OnEnable()

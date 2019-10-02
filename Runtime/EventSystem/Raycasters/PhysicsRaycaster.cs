@@ -33,9 +33,7 @@ namespace UnityEngine.EventSystems
         protected int m_MaxRayIntersections = 0;
         protected int m_LastMaxRayIntersections = 0;
 
-#if PACKAGE_PHYSICS
         RaycastHit[] m_Hits;
-#endif
 
         protected PhysicsRaycaster()
         {}
@@ -133,7 +131,6 @@ namespace UnityEngine.EventSystems
 
         public override void Raycast(PointerEventData eventData, List<RaycastResult> resultAppendList)
         {
-#if PACKAGE_PHYSICS
             Ray ray = new Ray();
             int displayIndex = 0;
             float distanceToClipPlane = 0;
@@ -154,6 +151,7 @@ namespace UnityEngine.EventSystems
             {
                 if (ReflectionMethodsCache.Singleton.getRaycastNonAlloc == null)
                     return;
+
                 if (m_LastMaxRayIntersections != m_MaxRayIntersections)
                 {
                     m_Hits = new RaycastHit[m_MaxRayIntersections];
@@ -186,10 +184,8 @@ namespace UnityEngine.EventSystems
                     resultAppendList.Add(result);
                 }
             }
-#endif
         }
 
-#if PACKAGE_PHYSICS
         private class RaycastHitComparer : IComparer<RaycastHit>
         {
             public static RaycastHitComparer instance = new RaycastHitComparer();
@@ -198,6 +194,5 @@ namespace UnityEngine.EventSystems
                 return x.distance.CompareTo(y.distance);
             }
         }
-#endif
     }
 }

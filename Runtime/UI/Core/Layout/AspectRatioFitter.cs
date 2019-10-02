@@ -174,9 +174,7 @@ namespace UnityEngine.UI
         private Vector2 GetParentSize()
         {
             RectTransform parent = rectTransform.parent as RectTransform;
-            if (!parent)
-                return Vector2.zero;
-            return parent.rect.size;
+            return !parent ? Vector2.zero : parent.rect.size;
         }
 
         /// <summary>

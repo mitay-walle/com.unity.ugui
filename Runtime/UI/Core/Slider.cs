@@ -246,9 +246,7 @@ namespace UnityEngine.UI
         {
             get
             {
-                if (wholeNumbers)
-                    return Mathf.Round(m_Value);
-                return m_Value;
+                return wholeNumbers ? Mathf.Round(m_Value) : m_Value;
             }
             set
             {

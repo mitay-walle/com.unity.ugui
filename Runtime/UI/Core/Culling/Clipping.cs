@@ -23,30 +23,25 @@ namespace UnityEngine.UI
             }
 
             Rect current = rectMaskParents[0].canvasRect;
-            Vector4 offset = rectMaskParents[0].padding;
-            float xMin = current.xMin + offset.x;
-            float xMax = current.xMax - offset.z;
-            float yMin = current.yMin + offset.y;
-            float yMax = current.yMax - offset.w;
+            float xMin = current.xMin;
+            float xMax = current.xMax;
+            float yMin = current.yMin;
+            float yMax = current.yMax;
             for (var i = 1; i < rectMaskParents.Count; ++i)
             {
                 current = rectMaskParents[i].canvasRect;
-                offset = rectMaskParents[i].padding;
-                if (xMin < current.xMin + offset.x)
-                    xMin = current.xMin + offset.x;
-                if (yMin < current.yMin + offset.y)
-                    yMin = current.yMin + offset.y;
-                if (xMax > current.xMax - offset.z)
-                    xMax = current.xMax - offset.z;
-                if (yMax > current.yMax - offset.w)
-                    yMax = current.yMax - offset.w;
+                if (xMin < current.xMin)
+                    xMin = current.xMin;
+                if (yMin < current.yMin)
+                    yMin = current.yMin;
+                if (xMax > current.xMax)
+                    xMax = current.xMax;
+                if (yMax > current.yMax)
+                    yMax = current.yMax;
             }
 
             validRect = xMax > xMin && yMax > yMin;
-            if (validRect)
-                return new Rect(xMin, yMin, xMax - xMin, yMax - yMin);
-            else
-                return new Rect();
+            return validRect ? new Rect(xMin, yMin, xMax - xMin, yMax - yMin) : new Rect();
         }
     }
 }

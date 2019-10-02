@@ -275,9 +275,6 @@ namespace UnityEngine.UI
         [SerializeField]
         private bool m_ReadOnly = false;
 
-        [SerializeField]
-        private bool m_ShouldActivateOnSelect = true;
-
         protected int m_CaretPosition = 0;
         protected int m_CaretSelectPosition = 0;
         private RectTransform caretRectTrans = null;
@@ -389,19 +386,11 @@ namespace UnityEngine.UI
             }
         }
 
-        /// <summary>
-        /// Should the inputfield be automatically activated upon selection.
-        /// </summary>
-
-        public virtual bool shouldActivateOnSelect
+        bool shouldActivateOnSelect
         {
-            set
-            {
-                m_ShouldActivateOnSelect = value;
-            }
             get
             {
-                return m_ShouldActivateOnSelect && Application.platform != RuntimePlatform.tvOS;
+                return Application.platform != RuntimePlatform.tvOS;
             }
         }
 
@@ -1246,30 +1235,9 @@ namespace UnityEngine.UI
             }
         }
 
-        // Returns true if the TouchScreenKeyboard should be used. On Android and Chrome OS, we only want to use the
-        // TouchScreenKeyboard if in-place editing is not allowed (i.e. when we do not have a hardware keyboard available).
-        private bool TouchScreenKeyboardShouldBeUsed()
-        {
-            RuntimePlatform platform = Application.platform;
-            switch (platform)
-            {
-                case RuntimePlatform.Android:
-                    return !TouchScreenKeyboard.isInPlaceEditingAllowed;
-                default:
-                    return TouchScreenKeyboard.isSupported;
-            }
-        }
-
         private bool InPlaceEditing()
         {
             return !TouchScreenKeyboard.isSupported || m_TouchKeyboardAllowsInPlaceEditing;
-        }
-
-        // In-place editing can change state if a hardware keyboard becomes available or is hidden while the input field is activated.
-        // This currently only happens on Chrome OS devices (that support laptop and tablet mode).
-        private bool InPlaceEditingChanged()
-        {
-            return m_TouchKeyboardAllowsInPlaceEditing != TouchScreenKeyboard.isInPlaceEditingAllowed;
         }
 
         void UpdateCaretFromKeyboard()
@@ -1322,21 +1290,6 @@ namespace UnityEngine.UI
             }
 
             AssignPositioningIfNeeded();
-
-            // If the device's state changed in a way that affects whether we should use a touchscreen keyboard or not,
-            // then we make sure to clear all of the caret/highlight state visually and deactivate the input field.
-            if (isFocused && InPlaceEditingChanged())
-            {
-                if (m_CachedInputRenderer != null)
-                {
-                    using (var helper = new VertexHelper())
-                        helper.FillMesh(mesh);
-
-                    m_CachedInputRenderer.SetMesh(mesh);
-                }
-
-                DeactivateInputField();
-            }
 
             if (!isFocused || InPlaceEditing())
                 return;
@@ -1414,9 +1367,7 @@ namespace UnityEngine.UI
             }
             else if (m_HideMobileInput && m_Keyboard.canSetSelection)
             {
-                var selectionStart = Mathf.Min(caretSelectPositionInternal, caretPositionInternal);
-                var selectionLength = Mathf.Abs(caretSelectPositionInternal - caretPositionInternal);
-                m_Keyboard.selection = new RangeInt(selectionStart, selectionLength);
+                m_Keyboard.selection = new RangeInt(caretPositionInternal, caretSelectPositionInternal - caretPositionInternal);
             }
             else if (m_Keyboard.canGetSelection && !m_HideMobileInput)
             {
@@ -2544,7 +2495,7 @@ namespace UnityEngine.UI
                 return;
 #endif
             // No need to draw a cursor on mobile as its handled by the devices keyboard.
-            if (!InPlaceEditing() && !shouldHideMobileInput)
+            if (!shouldHideMobileInput)
                 return;
 
             if (m_CachedInputRenderer == null && m_TextComponent != null)
@@ -2681,19 +2632,8 @@ namespace UnityEngine.UI
             if (displayIndex > 0 && displayIndex < Display.displays.Length)
                 screenHeight = Display.displays[displayIndex].renderingHeight;
 
-            // Calculate position of IME Window in screen space.
-            Camera cameraRef;
-            if (m_TextComponent.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-                cameraRef = null;
-            else
-                cameraRef = m_TextComponent.canvas.worldCamera;
-
-            Vector3 cursorPosition = m_CachedInputRenderer.gameObject.transform.TransformPoint(m_CursorVerts[0].position);
-            Vector2 screenPosition = RectTransformUtility.WorldToScreenPoint(cameraRef, cursorPosition);
-            screenPosition.y = screenHeight - screenPosition.y;
-
-            if (input != null)
-                input.compositionCursorPos = screenPosition;
+            startPosition.y = screenHeight - startPosition.y;
+            input.compositionCursorPos = startPosition;
         }
 
         private void CreateCursorVerts()
@@ -2933,20 +2873,20 @@ namespace UnityEngine.UI
             if (EventSystem.current.currentSelectedGameObject != gameObject)
                 EventSystem.current.SetSelectedGameObject(gameObject);
 
-            // Cache the value of isInPlaceEditingAllowed, because on UWP this involves calling into native code
-            // Usually, the value only needs to be updated once when the TouchKeyboard is opened; however, on Chrome OS,
-            // we check repeatedly to see if the in-place editing state has changed, so we can take action.
-            m_TouchKeyboardAllowsInPlaceEditing = TouchScreenKeyboard.isInPlaceEditingAllowed;
-
-            if (TouchScreenKeyboardShouldBeUsed())
+            if (TouchScreenKeyboard.isSupported)
             {
-                if (input != null && input.touchSupported)
+                if (input.touchSupported)
                 {
                     TouchScreenKeyboard.hideInput = shouldHideMobileInput;
                 }
+
                 m_Keyboard = (inputType == InputType.Password) ?
                     TouchScreenKeyboard.Open(m_Text, keyboardType, false, multiLine, true, false, "", characterLimit) :
                     TouchScreenKeyboard.Open(m_Text, keyboardType, inputType == InputType.AutoCorrect, multiLine, false, false, "", characterLimit);
+
+                // Cache the value of isInPlaceEditingAllowed, because on UWP this involves calling into native code
+                // The value only needs to be updated once when the TouchKeyboard is opened.
+                m_TouchKeyboardAllowsInPlaceEditing = TouchScreenKeyboard.isInPlaceEditingAllowed;
 
                 // If TouchKeyboard doesn't support InPlaceEditing don't call OnFocus as mobile doesn't properly support select all
                 // Just set it to the end of the text (where it would move when typing starts)
@@ -2959,10 +2899,10 @@ namespace UnityEngine.UI
             // Perform normal OnFocus routine if platform supports it
             if (!TouchScreenKeyboard.isSupported || m_TouchKeyboardAllowsInPlaceEditing)
             {
-                if (input != null)
-                    input.imeCompositionMode = IMECompositionMode.On;
+                input.imeCompositionMode = IMECompositionMode.On;
                 OnFocus();
             }
+
             m_AllowInput = true;
             m_OriginalText = text;
             m_WasCanceled = false;

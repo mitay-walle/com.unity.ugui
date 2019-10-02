@@ -38,7 +38,6 @@ namespace UnityEditor.UI
 
             AppearanceControlsGUI();
             RaycastControlsGUI();
-            MaskableControlsGUI();
             EditorGUILayout.PropertyField(m_UVRect, m_UVRectContent);
             SetShowNativeSize(false);
             NativeSizeButtonGUI();

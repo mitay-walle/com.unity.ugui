@@ -441,8 +441,6 @@ namespace UnityEngine.UI
 
         protected override void Start()
         {
-            m_AlphaTweenRunner = new TweenRunner<FloatTween>();
-            m_AlphaTweenRunner.Init(this);
             base.Start();
 
             RefreshShownValue();
