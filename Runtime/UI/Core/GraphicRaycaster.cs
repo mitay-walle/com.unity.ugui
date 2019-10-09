@@ -272,6 +272,7 @@ namespace UnityEngine.UI
                         module = this,
                         distance = distance,
                         screenPosition = eventPosition,
+                        displayIndex = displayIndex,
                         index = resultAppendList.Count,
                         depth = m_RaycastResults[index].depth,
                         sortingLayer = canvas.sortingLayerID,
