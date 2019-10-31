@@ -315,7 +315,7 @@ namespace UnityEngine.UI
                 Graphic graphic = foundGraphics[i];
 
                 // -1 means it hasn't been processed by the canvas, which means it isn't actually drawn
-                if (graphic.depth == -1 || !graphic.raycastTarget || graphic.canvasRenderer.cull)
+                if (!graphic.raycastTarget || graphic.canvasRenderer.cull || graphic.depth == -1)
                     continue;
 
                 if (!RectTransformUtility.RectangleContainsScreenPoint(graphic.rectTransform, pointerPosition, eventCamera))
