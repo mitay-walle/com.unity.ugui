@@ -2633,7 +2633,9 @@ namespace UnityEngine.UI
                 screenHeight = Display.displays[displayIndex].renderingHeight;
 
             startPosition.y = screenHeight - startPosition.y;
-            input.compositionCursorPos = startPosition;
+
+            if (input != null)
+                input.compositionCursorPos = startPosition;
         }
 
         private void CreateCursorVerts()
@@ -2875,11 +2877,10 @@ namespace UnityEngine.UI
 
             if (TouchScreenKeyboard.isSupported)
             {
-                if (input.touchSupported)
+                if (input != null && input.touchSupported)
                 {
                     TouchScreenKeyboard.hideInput = shouldHideMobileInput;
                 }
-
                 m_Keyboard = (inputType == InputType.Password) ?
                     TouchScreenKeyboard.Open(m_Text, keyboardType, false, multiLine, true, false, "", characterLimit) :
                     TouchScreenKeyboard.Open(m_Text, keyboardType, inputType == InputType.AutoCorrect, multiLine, false, false, "", characterLimit);
@@ -2899,10 +2900,10 @@ namespace UnityEngine.UI
             // Perform normal OnFocus routine if platform supports it
             if (!TouchScreenKeyboard.isSupported || m_TouchKeyboardAllowsInPlaceEditing)
             {
-                input.imeCompositionMode = IMECompositionMode.On;
+                if (input != null)
+                    input.imeCompositionMode = IMECompositionMode.On;
                 OnFocus();
             }
-
             m_AllowInput = true;
             m_OriginalText = text;
             m_WasCanceled = false;

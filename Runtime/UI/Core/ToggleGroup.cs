@@ -26,7 +26,7 @@ namespace UnityEngine.UI
         /// </remarks>
         public bool allowSwitchOff { get { return m_AllowSwitchOff; } set { m_AllowSwitchOff = value; } }
 
-        private List<Toggle> m_Toggles = new List<Toggle>();
+        protected List<Toggle> m_Toggles = new List<Toggle>();
 
         protected ToggleGroup()
         {}
