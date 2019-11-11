@@ -196,7 +196,7 @@ namespace UnityEngine.UI
                         ? Mathf.Infinity
                         : Mathf.Abs((currentEventCamera.farClipPlane - currentEventCamera.nearClipPlane) / projectionDirection);
                 }
-
+#if PACKAGE_PHYSICS
                 if (blockingObjects == BlockingObjects.ThreeD || blockingObjects == BlockingObjects.All)
                 {
                     if (ReflectionMethodsCache.Singleton.raycast3D != null)
@@ -206,7 +206,8 @@ namespace UnityEngine.UI
                             hitDistance = hits[0].distance;
                     }
                 }
-
+#endif
+#if PACKAGE_PHYSICS2D
                 if (blockingObjects == BlockingObjects.TwoD || blockingObjects == BlockingObjects.All)
                 {
                     if (ReflectionMethodsCache.Singleton.raycast2D != null)
@@ -216,6 +217,7 @@ namespace UnityEngine.UI
                             hitDistance = hits[0].distance;
                     }
                 }
+#endif
             }
 
             m_RaycastResults.Clear();

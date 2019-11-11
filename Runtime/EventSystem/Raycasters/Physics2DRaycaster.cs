@@ -13,7 +13,9 @@ namespace UnityEngine.EventSystems
     /// </summary>
     public class Physics2DRaycaster : PhysicsRaycaster
     {
+#if PACKAGE_PHYSICS2D
         RaycastHit2D[] m_Hits;
+#endif
 
         protected Physics2DRaycaster()
         {}
@@ -23,6 +25,7 @@ namespace UnityEngine.EventSystems
         /// </summary>
         public override void Raycast(PointerEventData eventData, List<RaycastResult> resultAppendList)
         {
+#if PACKAGE_PHYSICS2D
             Ray ray = new Ray();
             float distanceToClipPlane = 0;
             int displayIndex = 0;
@@ -35,7 +38,6 @@ namespace UnityEngine.EventSystems
             {
                 if (ReflectionMethodsCache.Singleton.getRayIntersectionAll == null)
                     return;
-
                 m_Hits = ReflectionMethodsCache.Singleton.getRayIntersectionAll(ray, distanceToClipPlane, finalEventMask);
                 hitCount = m_Hits.Length;
             }
@@ -75,6 +77,7 @@ namespace UnityEngine.EventSystems
                     resultAppendList.Add(result);
                 }
             }
+#endif
         }
     }
 }
