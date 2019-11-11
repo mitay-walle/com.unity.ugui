@@ -16,6 +16,16 @@ namespace UnityEngine.UI.Tests
             public bool isStateSelected { get { return currentSelectionState == SelectionState.Selected; } }
             public bool isStatePressed { get { return currentSelectionState == SelectionState.Pressed; } }
             public bool isStateDisabled { get { return currentSelectionState == SelectionState.Disabled; } }
+
+            public Selectable GetSelectableAtIndex(int index)
+            {
+                return s_Selectables[index];
+            }
+
+            public int GetSelectableCurrentIndex()
+            {
+                return m_CurrentIndex;
+            }
         }
 
         private SelectableTest selectable;
@@ -45,6 +55,20 @@ namespace UnityEngine.UI.Tests
         public void TearDown()
         {
             EventSystem.current = null;
+        }
+
+        [Test] // regression test 1160054
+        public void SelectableArrayRemovesReferenceUponDisable()
+        {
+            int originalSelectableCount = Selectable.allSelectableCount;
+
+            selectable.enabled = false;
+
+            Assert.AreEqual(originalSelectableCount - 1, Selectable.allSelectableCount, "We have more then originalSelectableCount - 1 selectable objects.");
+            //ensure the item as the last index is nulled out as it replaced the item that was disabled.
+            Assert.IsNull(selectable.GetSelectableAtIndex(Selectable.allSelectableCount));
+
+            selectable.enabled = true;
         }
 
         #region Selected object

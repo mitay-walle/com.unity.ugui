@@ -20,7 +20,7 @@ namespace ToggleTest
         protected GameObject m_PrefabRoot;
         protected List<Toggle> m_toggle = new List<Toggle>();
         protected static int nbToggleInGroup = 2;
-        private ToggleGroup m_toggleGroup;
+        private TestableToggleGroup m_toggleGroup;
 
         public void Setup()
         {
@@ -29,9 +29,9 @@ namespace ToggleTest
             GameObject canvasGO = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
             canvasGO.transform.SetParent(rootGO.transform);
 
-            var toggleGroupGO = new GameObject("ToggleGroup", typeof(RectTransform), typeof(ToggleGroup));
+            var toggleGroupGO = new GameObject("ToggleGroup", typeof(RectTransform), typeof(TestableToggleGroup));
             toggleGroupGO.transform.SetParent(canvasGO.transform);
-            toggleGroupGO.AddComponent(typeof(ToggleGroup));
+            toggleGroupGO.AddComponent(typeof(TestableToggleGroup));
 
             var toggle0GO = new GameObject("TestToggle0", typeof(RectTransform), typeof(Toggle), typeof(Image));
             toggle0GO.transform.SetParent(toggleGroupGO.transform);
@@ -60,7 +60,7 @@ namespace ToggleTest
         {
             m_PrefabRoot = Object.Instantiate(Resources.Load("TestToggleGroup")) as GameObject;
 
-            m_toggleGroup = m_PrefabRoot.GetComponentInChildren<ToggleGroup>();
+            m_toggleGroup = m_PrefabRoot.GetComponentInChildren<TestableToggleGroup>();
             m_toggle.AddRange(m_PrefabRoot.GetComponentsInChildren<Toggle>());
         }
 
@@ -127,6 +127,15 @@ namespace ToggleTest
             m_PrefabRoot.SetActive(false);
             m_PrefabRoot.SetActive(true);
             Assert.IsTrue(m_toggle[toggleIndex].isOn);
+        }
+
+        [Test]
+        public void ChangingToggleGroupUnregistersFromOriginalGroup()
+        {
+            m_toggle[0].group = m_toggleGroup;
+            Assert.IsTrue(m_toggleGroup.ToggleListContains(m_toggle[0]));
+            m_toggle[0].group = null;
+            Assert.IsFalse(m_toggleGroup.ToggleListContains(m_toggle[0]));
         }
     }
 }

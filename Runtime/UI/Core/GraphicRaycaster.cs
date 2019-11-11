@@ -239,9 +239,7 @@ namespace UnityEngine.UI
                     else
                     {
                         // If we have a camera compare the direction against the cameras forward.
-                        var cameraFoward = currentEventCamera.transform.rotation * Vector3.forward;
-                        var dir = go.transform.rotation * Vector3.forward;
-                        appendGraphic = Vector3.Dot(cameraFoward, dir) > 0;
+                        appendGraphic = Vector3.Dot(go.transform.position - currentEventCamera.transform.position, go.transform.forward) > 0;
                     }
                 }
 
@@ -317,7 +315,7 @@ namespace UnityEngine.UI
                 Graphic graphic = foundGraphics[i];
 
                 // -1 means it hasn't been processed by the canvas, which means it isn't actually drawn
-                if (graphic.depth == -1 || !graphic.raycastTarget || graphic.canvasRenderer.cull)
+                if (!graphic.raycastTarget || graphic.canvasRenderer.cull || graphic.depth == -1)
                     continue;
 
                 if (!RectTransformUtility.RectangleContainsScreenPoint(graphic.rectTransform, pointerPosition, eventCamera))

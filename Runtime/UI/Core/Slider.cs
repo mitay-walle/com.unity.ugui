@@ -372,7 +372,6 @@ namespace UnityEngine.UI
             if (IsActive())
             {
                 UpdateCachedReferences();
-                Set(m_Value, false);
                 // Update rects in next update since other things might affect them even if value didn't change.
                 m_DelayedUpdateVisuals = true;
             }
@@ -427,6 +426,7 @@ namespace UnityEngine.UI
             if (m_DelayedUpdateVisuals)
             {
                 m_DelayedUpdateVisuals = false;
+                Set(m_Value, false);
                 UpdateVisuals();
             }
         }
