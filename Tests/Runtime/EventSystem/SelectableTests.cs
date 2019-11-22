@@ -268,6 +268,7 @@ namespace UnityEngine.UI.Tests
             Assert.AreEqual(selectable.colors.disabledColor, canvasRenderer.GetColor());
         }
 
+#if PACKAGE_ANIMATION
         [Test]
         public void TriggerAnimationWithNoAnimator()
         {
@@ -293,6 +294,7 @@ namespace UnityEngine.UI.Tests
             Assert.DoesNotThrow(() => selectable.InvokeTriggerAnimation("asdasd"));
         }
 
+#endif
         #endregion
 
         #region Selection state and pointer
