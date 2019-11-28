@@ -10,6 +10,7 @@ namespace UnityEngine.UI
     /// Image is a textured element in the UI hierarchy.
     /// </summary>
 
+    [RequireComponent(typeof(CanvasRenderer))]
     [AddComponentMenu("UI/Image", 11)]
     /// <summary>
     ///   Displays a Sprite inside the UI System.
