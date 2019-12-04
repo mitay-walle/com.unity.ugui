@@ -14,7 +14,6 @@ namespace UnityEngine.UI
     /// Base class for all UI components that should be derived from when creating new Graphic types.
     /// </summary>
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(CanvasRenderer))]
     [RequireComponent(typeof(RectTransform))]
     [ExecuteAlways]
     /// <summary>
@@ -157,6 +156,25 @@ namespace UnityEngine.UI
         /// Should this graphic be considered a target for raycasting?
         /// </summary>
         public virtual bool raycastTarget { get { return m_RaycastTarget; } set { m_RaycastTarget = value; } }
+
+        [SerializeField]
+        private Vector4 m_RaycastPadding = new Vector4();
+
+        /// <summary>
+        /// Padding to be applied to the masking
+        /// X = Left
+        /// Y = Bottom
+        /// Z = Right
+        /// W = Top
+        /// </summary>
+        public Vector4 raycastPadding
+        {
+            get { return m_RaycastPadding; }
+            set
+            {
+                m_RaycastPadding = value;
+            }
+        }
 
         [NonSerialized] private RectTransform m_RectTransform;
         [NonSerialized] private CanvasRenderer m_CanvasRenderer;
@@ -400,6 +418,11 @@ namespace UnityEngine.UI
                 if (ReferenceEquals(m_CanvasRenderer, null))
                 {
                     m_CanvasRenderer = GetComponent<CanvasRenderer>();
+
+                    if (ReferenceEquals(m_CanvasRenderer, null))
+                    {
+                        m_CanvasRenderer = gameObject.AddComponent<CanvasRenderer>();
+                    }
                 }
                 return m_CanvasRenderer;
             }

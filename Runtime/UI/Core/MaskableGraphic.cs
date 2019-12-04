@@ -134,6 +134,11 @@ namespace UnityEngine.UI
                 canvasRenderer.DisableRectClipping();
         }
 
+        public virtual void SetClipSoftness(Vector2 clipSoftness)
+        {
+            canvasRenderer.clippingSoftness = clipSoftness;
+        }
+
         protected override void OnEnable()
         {
             base.OnEnable();
