@@ -187,12 +187,12 @@ namespace UnityEngine.EventSystems
         {
             ExecuteEvents.Execute(pointerEvent.pointerPress, pointerEvent, ExecuteEvents.pointerUpHandler);
 
-            var pointerUpHandler = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
+            var pointerClickHandler = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
 
             // PointerClick and Drop events
-            if (pointerEvent.pointerPress == pointerUpHandler && pointerEvent.eligibleForClick)
+            if (pointerEvent.pointerClick == pointerClickHandler && pointerEvent.eligibleForClick)
             {
-                ExecuteEvents.Execute(pointerEvent.pointerPress, pointerEvent, ExecuteEvents.pointerClickHandler);
+                ExecuteEvents.Execute(pointerEvent.pointerClick, pointerEvent, ExecuteEvents.pointerClickHandler);
             }
             else if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
             {
@@ -202,6 +202,7 @@ namespace UnityEngine.EventSystems
             pointerEvent.eligibleForClick = false;
             pointerEvent.pointerPress = null;
             pointerEvent.rawPointerPress = null;
+            pointerEvent.pointerClick = null;
 
             if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
                 ExecuteEvents.Execute(pointerEvent.pointerDrag, pointerEvent, ExecuteEvents.endDragHandler);
@@ -361,9 +362,11 @@ namespace UnityEngine.EventSystems
                 // handler to be what would receive a click.
                 var newPressed = ExecuteEvents.ExecuteHierarchy(currentOverGo, pointerEvent, ExecuteEvents.pointerDownHandler);
 
+                var newClick = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
+
                 // didnt find a press handler... search for a click handler
                 if (newPressed == null)
-                    newPressed = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
+                    newPressed = newClick;
 
                 // Debug.Log("Pressed: " + newPressed);
 
@@ -386,6 +389,7 @@ namespace UnityEngine.EventSystems
 
                 pointerEvent.pointerPress = newPressed;
                 pointerEvent.rawPointerPress = currentOverGo;
+                pointerEvent.pointerClick = newClick;
 
                 pointerEvent.clickTime = time;
 
@@ -407,12 +411,12 @@ namespace UnityEngine.EventSystems
                 // Debug.Log("KeyCode: " + pointer.eventData.keyCode);
 
                 // see if we mouse up on the same element that we clicked on...
-                var pointerUpHandler = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
+                var pointerClickHandler = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
 
                 // PointerClick and Drop events
-                if (pointerEvent.pointerPress == pointerUpHandler && pointerEvent.eligibleForClick)
+                if (pointerEvent.pointerClick == pointerClickHandler && pointerEvent.eligibleForClick)
                 {
-                    ExecuteEvents.Execute(pointerEvent.pointerPress, pointerEvent, ExecuteEvents.pointerClickHandler);
+                    ExecuteEvents.Execute(pointerEvent.pointerClick, pointerEvent, ExecuteEvents.pointerClickHandler);
                 }
                 else if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
                 {
@@ -422,6 +426,7 @@ namespace UnityEngine.EventSystems
                 pointerEvent.eligibleForClick = false;
                 pointerEvent.pointerPress = null;
                 pointerEvent.rawPointerPress = null;
+                pointerEvent.pointerClick = null;
 
                 if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
                     ExecuteEvents.Execute(pointerEvent.pointerDrag, pointerEvent, ExecuteEvents.endDragHandler);
@@ -600,10 +605,11 @@ namespace UnityEngine.EventSystems
                 // if we can't find a press handler set the press
                 // handler to be what would receive a click.
                 var newPressed = ExecuteEvents.ExecuteHierarchy(currentOverGo, pointerEvent, ExecuteEvents.pointerDownHandler);
+                var newClick = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
 
                 // didnt find a press handler... search for a click handler
                 if (newPressed == null)
-                    newPressed = ExecuteEvents.GetEventHandler<IPointerClickHandler>(currentOverGo);
+                    newPressed = newClick;
 
                 // Debug.Log("Pressed: " + newPressed);
 
@@ -626,6 +632,7 @@ namespace UnityEngine.EventSystems
 
                 pointerEvent.pointerPress = newPressed;
                 pointerEvent.rawPointerPress = currentOverGo;
+                pointerEvent.pointerClick = newClick;
 
                 pointerEvent.clickTime = time;
 
