@@ -241,7 +241,8 @@ namespace UnityEngine.UI
                     else
                     {
                         // If we have a camera compare the direction against the cameras forward.
-                        appendGraphic = Vector3.Dot(go.transform.position - currentEventCamera.transform.position, go.transform.forward) > 0;
+                        var cameraForward = currentEventCamera.transform.rotation * Vector3.forward * currentEventCamera.nearClipPlane;
+                        appendGraphic = Vector3.Dot(go.transform.position - currentEventCamera.transform.position - cameraForward, go.transform.forward) >= 0;
                     }
                 }
 
