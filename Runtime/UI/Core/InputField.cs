@@ -2632,10 +2632,19 @@ namespace UnityEngine.UI
             if (displayIndex > 0 && displayIndex < Display.displays.Length)
                 screenHeight = Display.displays[displayIndex].renderingHeight;
 
-            startPosition.y = screenHeight - startPosition.y;
+            // Calculate position of IME Window in screen space.
+            Camera cameraRef;
+            if (m_TextComponent.canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                cameraRef = null;
+            else
+                cameraRef = m_TextComponent.canvas.worldCamera;
+
+            Vector3 cursorPosition = m_CachedInputRenderer.gameObject.transform.TransformPoint(m_CursorVerts[0].position);
+            Vector2 screenPosition = RectTransformUtility.WorldToScreenPoint(cameraRef, cursorPosition);
+            screenPosition.y = screenHeight - screenPosition.y;
 
             if (input != null)
-                input.compositionCursorPos = startPosition;
+                input.compositionCursorPos = screenPosition;
         }
 
         private void CreateCursorVerts()
