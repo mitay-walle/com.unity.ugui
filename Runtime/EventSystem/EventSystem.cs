@@ -332,6 +332,8 @@ namespace UnityEngine.EventSystems
         protected virtual void OnApplicationFocus(bool hasFocus)
         {
             m_HasFocus = hasFocus;
+            if (!m_HasFocus)
+                TickModules();
         }
 
         protected virtual void Update()
