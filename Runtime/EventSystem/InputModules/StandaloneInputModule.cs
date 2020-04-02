@@ -150,19 +150,11 @@ namespace UnityEngine.EventSystems
 
         private bool ShouldIgnoreEventsOnNoFocus()
         {
-            switch (SystemInfo.operatingSystemFamily)
-            {
-                case OperatingSystemFamily.Windows:
-                case OperatingSystemFamily.Linux:
-                case OperatingSystemFamily.MacOSX:
 #if UNITY_EDITOR
-                    if (UnityEditor.EditorApplication.isRemoteConnected)
-                        return false;
+            return !UnityEditor.EditorApplication.isRemoteConnected;
+#else
+            return true;
 #endif
-                    return true;
-                default:
-                    return false;
-            }
         }
 
         public override void UpdateModule()
@@ -398,8 +390,6 @@ namespace UnityEngine.EventSystems
 
                 if (pointerEvent.pointerDrag != null)
                     ExecuteEvents.Execute(pointerEvent.pointerDrag, pointerEvent, ExecuteEvents.initializePotentialDrag);
-
-                m_InputPointerEvent = pointerEvent;
             }
 
             // PointerUp notification
@@ -437,9 +427,9 @@ namespace UnityEngine.EventSystems
                 // send exit events as we need to simulate this on touch up on touch device
                 ExecuteEvents.ExecuteHierarchy(pointerEvent.pointerEnter, pointerEvent, ExecuteEvents.pointerExitHandler);
                 pointerEvent.pointerEnter = null;
-
-                m_InputPointerEvent = pointerEvent;
             }
+
+            m_InputPointerEvent = pointerEvent;
         }
 
         /// <summary>
