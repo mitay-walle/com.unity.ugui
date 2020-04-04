@@ -1028,13 +1028,13 @@ namespace UnityEngine.UI
             // Where the position of the lower left corner of the content bounds should be, in the space of the view.
             float contentBoundsMinPosition = m_ViewBounds.min[axis] - value * hiddenLength;
             // The new content localPosition, in the space of the view.
-            float newLocalPosition = m_Content.localPosition[axis] + contentBoundsMinPosition - m_ContentBounds.min[axis];
+            float newAnchoredPosition = m_Content.anchoredPosition[axis] + contentBoundsMinPosition - m_ContentBounds.min[axis];
 
-            Vector3 localPosition = m_Content.localPosition;
-            if (Mathf.Abs(localPosition[axis] - newLocalPosition) > 0.01f)
+            Vector3 anchoredPosition = m_Content.anchoredPosition;
+            if (Mathf.Abs(anchoredPosition[axis] - newAnchoredPosition) > 0.01f)
             {
-                localPosition[axis] = newLocalPosition;
-                m_Content.localPosition = localPosition;
+                anchoredPosition[axis] = newAnchoredPosition;
+                m_Content.anchoredPosition = anchoredPosition;
                 m_Velocity[axis] = 0;
                 UpdateBounds();
             }

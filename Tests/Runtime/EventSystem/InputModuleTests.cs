@@ -84,7 +84,6 @@ public class InputModuleTests
         Assert.IsTrue(callbackCheck.onBeginDragCalled, "OnBeginDrag not called");
         Assert.IsTrue(callbackCheck.onDragCalled, "OnDragCalled not called");
         Assert.IsTrue(callbackCheck.onEndDragCalled, "OnEndDragCalled not called");
-        Assert.IsTrue(callbackCheck.onDropCalled, "OnDrop not called");
     }
 
     [UnityTest]

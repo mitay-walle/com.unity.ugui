@@ -123,7 +123,7 @@ namespace UnityEngine.UI
             if (canvas == null)
                 return;
 
-            var canvasGraphics = GraphicRegistry.GetGraphicsForCanvas(canvas);
+            var canvasGraphics = GraphicRegistry.GetRaycastableGraphicsForCanvas(canvas);
             if (canvasGraphics == null || canvasGraphics.Count == 0)
                 return;
 
@@ -298,10 +298,13 @@ namespace UnityEngine.UI
         {
             get
             {
-                if (canvas.renderMode == RenderMode.ScreenSpaceOverlay || (canvas.renderMode == RenderMode.ScreenSpaceCamera && canvas.worldCamera == null))
+                var canvas = this.canvas;
+                var renderMode = canvas.renderMode;
+                if (renderMode == RenderMode.ScreenSpaceOverlay
+                    || (renderMode == RenderMode.ScreenSpaceCamera && canvas.worldCamera == null))
                     return null;
 
-                return canvas.worldCamera != null ? canvas.worldCamera : Camera.main;
+                return canvas.worldCamera ?? Camera.main;
             }
         }
 

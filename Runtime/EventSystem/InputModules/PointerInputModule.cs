@@ -158,7 +158,8 @@ namespace UnityEngine.EventSystems
 
             public bool AnyPressesThisFrame()
             {
-                for (int i = 0; i < m_TrackedButtons.Count; i++)
+                var trackedButtonsCount = m_TrackedButtons.Count;
+                for (int i = 0; i < trackedButtonsCount; i++)
                 {
                     if (m_TrackedButtons[i].eventData.PressedThisFrame())
                         return true;
@@ -168,7 +169,8 @@ namespace UnityEngine.EventSystems
 
             public bool AnyReleasesThisFrame()
             {
-                for (int i = 0; i < m_TrackedButtons.Count; i++)
+                var trackedButtonsCount = m_TrackedButtons.Count;
+                for (int i = 0; i < trackedButtonsCount; i++)
                 {
                     if (m_TrackedButtons[i].eventData.ReleasedThisFrame())
                         return true;
@@ -179,7 +181,8 @@ namespace UnityEngine.EventSystems
             public ButtonState GetButtonState(PointerEventData.InputButton button)
             {
                 ButtonState tracked = null;
-                for (int i = 0; i < m_TrackedButtons.Count; i++)
+                var trackedButtonsCount = m_TrackedButtons.Count;
+                for (int i = 0; i < trackedButtonsCount; i++)
                 {
                     if (m_TrackedButtons[i].button == button)
                     {
