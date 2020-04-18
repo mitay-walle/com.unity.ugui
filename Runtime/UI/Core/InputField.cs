@@ -1632,6 +1632,7 @@ namespace UnityEngine.UI
             bool shift = (currentEventModifiers & EventModifiers.Shift) != 0;
             bool alt = (currentEventModifiers & EventModifiers.Alt) != 0;
             bool ctrlOnly = ctrl && !alt && !shift;
+            bool shiftOnly = shift && !ctrl && !alt;
 
             switch (evt.keyCode)
             {
@@ -1709,6 +1710,26 @@ namespace UnityEngine.UI
                         Delete();
                         UpdateTouchKeyboardFromEditChanges();
                         SendOnValueChangedAndUpdateLabel();
+                        return EditState.Continue;
+                    }
+                    break;
+                }
+                case KeyCode.Insert:
+                {
+                    // Copy via Insert key
+                    if (ctrlOnly)
+                    {
+                        if (inputType != InputType.Password)
+                            clipboard = GetSelectedString();
+                        else
+                            clipboard = "";
+                        return EditState.Continue;
+                    }
+                    // Paste via insert key.
+                    else if (shiftOnly)
+                    {
+                        Append(clipboard);
+                        UpdateLabel();
                         return EditState.Continue;
                     }
                     break;
