@@ -28,7 +28,9 @@ namespace UnityEngine.UI
             float xMax = current.xMax - offset.z;
             float yMin = current.yMin + offset.y;
             float yMax = current.yMax - offset.w;
-            for (var i = 1; i < rectMaskParents.Count; ++i)
+
+            var rectMaskParentsCount = rectMaskParents.Count;
+            for (var i = 1; i < rectMaskParentsCount; ++i)
             {
                 current = rectMaskParents[i].canvasRect;
                 offset = rectMaskParents[i].padding;

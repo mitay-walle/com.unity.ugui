@@ -149,7 +149,8 @@ namespace UnityEngine.UI
             var components = ListPool<Component>.Get();
             rect.GetComponents(typeof(ILayoutElement), components);
 
-            for (int i = 0; i < components.Count; i++)
+            var componentsCount = components.Count;
+            for (int i = 0; i < componentsCount; i++)
             {
                 var layoutComp = components[i] as ILayoutElement;
                 if (layoutComp is Behaviour && !((Behaviour)layoutComp).isActiveAndEnabled)

@@ -116,7 +116,8 @@ namespace UnityEngine.EventSystems
         /// </summary>
         protected static RaycastResult FindFirstRaycast(List<RaycastResult> candidates)
         {
-            for (var i = 0; i < candidates.Count; ++i)
+            var candidatesCount = candidates.Count;
+            for (var i = 0; i < candidatesCount; ++i)
             {
                 if (candidates[i].gameObject == null)
                     continue;
@@ -192,7 +193,8 @@ namespace UnityEngine.EventSystems
             // then exit
             if (newEnterTarget == null || currentPointerData.pointerEnter == null)
             {
-                for (var i = 0; i < currentPointerData.hovered.Count; ++i)
+                var hoveredCount = currentPointerData.hovered.Count;
+                for (var i = 0; i < hoveredCount; ++i)
                     ExecuteEvents.Execute(currentPointerData.hovered[i], currentPointerData, ExecuteEvents.pointerExitHandler);
 
                 currentPointerData.hovered.Clear();

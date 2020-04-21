@@ -155,7 +155,26 @@ namespace UnityEngine.UI
         /// <summary>
         /// Should this graphic be considered a target for raycasting?
         /// </summary>
-        public virtual bool raycastTarget { get { return m_RaycastTarget; } set { m_RaycastTarget = value; } }
+        public virtual bool raycastTarget
+        {
+            get
+            {
+                return m_RaycastTarget;
+            }
+            set
+            {
+                if (value != m_RaycastTarget)
+                {
+                    if (m_RaycastTarget)
+                        GraphicRegistry.UnregisterRaycastGraphicForCanvas(canvas, this);
+
+                    m_RaycastTarget = value;
+
+                    if (m_RaycastTarget)
+                        GraphicRegistry.RegisterRaycastGraphicForCanvas(canvas, this);
+                }
+            }
+        }
 
         [SerializeField]
         private Vector4 m_RaycastPadding = new Vector4();

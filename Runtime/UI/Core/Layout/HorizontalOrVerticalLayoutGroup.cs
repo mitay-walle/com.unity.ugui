@@ -96,7 +96,8 @@ namespace UnityEngine.UI
             float totalFlexible = 0;
 
             bool alongOtherAxis = (isVertical ^ (axis == 1));
-            for (int i = 0; i < rectChildren.Count; i++)
+            var rectChildrenCount = rectChildren.Count;
+            for (int i = 0; i < rectChildrenCount; i++)
             {
                 RectTransform child = rectChildren[i];
                 float min, preferred, flexible;
