@@ -19,6 +19,7 @@ namespace UnityEditor.UI
         protected SerializedProperty m_Material;
         protected SerializedProperty m_RaycastTarget;
         protected SerializedProperty m_RaycastPadding;
+        protected SerializedProperty m_Maskable;
 
         private GUIContent m_CorrectButtonContent;
         protected AnimBool m_ShowNativeSize;
@@ -50,6 +51,7 @@ namespace UnityEditor.UI
             m_Material = serializedObject.FindProperty("m_Material");
             m_RaycastTarget = serializedObject.FindProperty("m_RaycastTarget");
             m_RaycastPadding = serializedObject.FindProperty("m_RaycastPadding");
+            m_Maskable = serializedObject.FindProperty("m_Maskable");
 
             m_ShowNativeSize = new AnimBool(false);
             m_ShowNativeSize.valueChanged.AddListener(Repaint);
@@ -61,6 +63,7 @@ namespace UnityEditor.UI
             EditorGUILayout.PropertyField(m_Script);
             AppearanceControlsGUI();
             RaycastControlsGUI();
+            MaskableControlsGUI();
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -100,6 +103,11 @@ namespace UnityEditor.UI
                 EditorGUILayout.EndHorizontal();
             }
             EditorGUILayout.EndFadeGroup();
+        }
+
+        protected void MaskableControlsGUI()
+        {
+            EditorGUILayout.PropertyField(m_Maskable);
         }
 
         /// <summary>
