@@ -772,6 +772,7 @@ namespace UnityEngine.UI
             // and associated components... The correct way to do this is by
             // calling OnValidate... Because MB's don't have a common base class
             // we do this via reflection. It's nasty and ugly... Editor only.
+            m_SkipLayoutUpdate = true;
             var mbs = gameObject.GetComponents<MonoBehaviour>();
             foreach (var mb in mbs)
             {
@@ -781,6 +782,7 @@ namespace UnityEngine.UI
                 if (methodInfo != null)
                     methodInfo.Invoke(mb, null);
             }
+            m_SkipLayoutUpdate = false;
         }
 
         protected override void Reset()
