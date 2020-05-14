@@ -22,7 +22,7 @@ public class DropdownTests : IPrebuildSetup
         canvas.renderMode = RenderMode.WorldSpace;
         canvasGO.transform.SetParent(rootGO.transform);
 
-        var dropdownGO = new GameObject("Dropdown", typeof(Dropdown), typeof(RectTransform));
+        var dropdownGO = new GameObject("Dropdown", typeof(RectTransform), typeof(Dropdown));
         var dropdownTransform = dropdownGO.GetComponent<RectTransform>();
         dropdownTransform.SetParent(canvas.transform);
         dropdownTransform.anchoredPosition = Vector2.zero;

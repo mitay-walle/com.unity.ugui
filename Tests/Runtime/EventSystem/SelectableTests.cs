@@ -51,12 +51,6 @@ namespace UnityEngine.UI.Tests
             selectable.targetGraphic = selectable.gameObject.AddComponent<ConcreteGraphic>();
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            EventSystem.current = null;
-        }
-
         [Test] // regression test 1160054
         public void SelectableArrayRemovesReferenceUponDisable()
         {
@@ -403,21 +397,21 @@ namespace UnityEngine.UI.Tests
         [Test] // regression test 787563
         public void SettingInteractableWithNoEventSystemShouldNotCrash()
         {
-            EventSystem.current = null;
+            EventSystem.current.enabled = false;
             selectable.interactable = false;
         }
 
         [Test] // regression test 787563
         public void OnPointerDownWithNoEventSystemShouldNotCrash()
         {
-            EventSystem.current = null;
+            EventSystem.current.enabled = false;
             selectable.OnPointerDown(new PointerEventData(EventSystem.current) {button = PointerEventData.InputButton.Left});
         }
 
         [Test] // regression test 787563
         public void SelectWithNoEventSystemShouldNotCrash()
         {
-            EventSystem.current = null;
+            EventSystem.current.enabled = false;
             selectable.Select();
         }
 

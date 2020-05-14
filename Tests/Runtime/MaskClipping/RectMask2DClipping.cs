@@ -26,14 +26,14 @@ namespace UnityEngine.UI.Tests
             rootCanvasGO.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
             rootCanvasGO.transform.SetParent(rootGO.transform);
 
-            var maskGO = new GameObject("Mask", typeof(RectMask2D), typeof(RectTransform));
+            var maskGO = new GameObject("Mask", typeof(RectTransform), typeof(RectMask2D));
             var maskTransform = maskGO.GetComponent<RectTransform>();
             maskTransform.SetParent(rootCanvasGO.transform);
             maskTransform.localPosition = Vector3.zero;
             maskTransform.sizeDelta = new Vector2(200, 200);
             maskTransform.localScale = Vector3.one;
 
-            var imageGO = new GameObject("Image", typeof(ImageHook), typeof(RectTransform));
+            var imageGO = new GameObject("Image", typeof(RectTransform), typeof(ImageHook));
             var imageTransform = imageGO.GetComponent<RectTransform>();
             imageTransform.SetParent(maskTransform);
             imageTransform.localPosition = new Vector3(-125, 0, 0);

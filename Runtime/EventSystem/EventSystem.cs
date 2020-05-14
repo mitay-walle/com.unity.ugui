@@ -32,10 +32,14 @@ namespace UnityEngine.EventSystems
             {
                 int index = m_EventSystems.IndexOf(value);
 
-                if (index >= 0)
+                if (index > 0)
                 {
                     m_EventSystems.RemoveAt(index);
                     m_EventSystems.Insert(0, value);
+                }
+                else if (index < 0)
+                {
+                    Debug.LogError("Failed setting EventSystem.current to unknown EventSystem " + value);
                 }
             }
         }

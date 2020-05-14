@@ -497,7 +497,10 @@ namespace UnityEngine.UI
         private RectTransform m_HorizontalScrollbarRect;
         private RectTransform m_VerticalScrollbarRect;
 
+        // field is never assigned warning
+        #pragma warning disable 649
         private DrivenRectTransformTracker m_Tracker;
+        #pragma warning restore 649
 
         protected ScrollRect()
         {}

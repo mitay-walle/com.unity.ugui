@@ -344,7 +344,10 @@ namespace UnityEngine.UI
         // The offset from handle position to mouse down position
         private Vector2 m_Offset = Vector2.zero;
 
+        // field is never assigned warning
+        #pragma warning disable 649
         private DrivenRectTransformTracker m_Tracker;
+        #pragma warning restore 649
 
         // This "delayed" mechanism is required for case 1037681.
         private bool m_DelayedUpdateVisuals = false;

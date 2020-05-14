@@ -25,7 +25,7 @@ public class ScrollBarClamp : IPrebuildSetup
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         rootCanvasGO.transform.SetParent(rootGO.transform);
 
-        var scrollRectGo = new GameObject("Scroll View", typeof(ScrollRect), typeof(RectMask2D), typeof(RectTransform));
+        var scrollRectGo = new GameObject("Scroll View", typeof(RectTransform), typeof(ScrollRect), typeof(RectMask2D));
         var scrollRectTransform = scrollRectGo.GetComponent<RectTransform>();
         scrollRectTransform.SetParent(rootCanvasGO.transform);
         scrollRectTransform.anchorMin = Vector2.zero;
@@ -35,7 +35,7 @@ public class ScrollBarClamp : IPrebuildSetup
         var scrollRect = scrollRectGo.GetComponent<ScrollRect>();
         scrollRect.movementType = ScrollRect.MovementType.Elastic;
 
-        var scrollbarGo = new GameObject("Scrollbar", typeof(Scrollbar), typeof(RectTransform));
+        var scrollbarGo = new GameObject("Scrollbar", typeof(RectTransform), typeof(Scrollbar));
         var scrollbarTransform = scrollbarGo.GetComponent<RectTransform>();
         scrollbarTransform.SetParent(scrollRectTransform);
         scrollbarTransform.anchorMin = new Vector2(1, 0);
@@ -47,7 +47,7 @@ public class ScrollBarClamp : IPrebuildSetup
 
         scrollRect.verticalScrollbar = scrollbar;
 
-        var contentGo = new GameObject("Content", typeof(VerticalLayoutGroup), typeof(RectTransform));
+        var contentGo = new GameObject("Content", typeof(RectTransform), typeof(VerticalLayoutGroup));
         var contentTransform = contentGo.GetComponent<RectTransform>();
         contentTransform.SetParent(scrollRectTransform);
         contentTransform.anchorMin = new Vector2(0, 1);
