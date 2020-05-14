@@ -395,20 +395,25 @@ namespace UnityEngine.UI
 
             base.OnPointerDown(eventData);
             isPointerDownAndNotDragging = true;
-            m_PointerDownRepeat = StartCoroutine(ClickRepeat(eventData));
+            m_PointerDownRepeat = StartCoroutine(ClickRepeat(eventData.pointerPressRaycast.screenPosition, eventData.enterEventCamera));
+        }
+
+        protected IEnumerator ClickRepeat(PointerEventData eventData)
+        {
+            return ClickRepeat(eventData.pointerPressRaycast.screenPosition, eventData.enterEventCamera);
         }
 
         /// <summary>
         /// Coroutine function for handling continual press during Scrollbar.OnPointerDown.
         /// </summary>
-        protected IEnumerator ClickRepeat(PointerEventData eventData)
+        protected IEnumerator ClickRepeat(Vector2 screenPosition, Camera camera)
         {
             while (isPointerDownAndNotDragging)
             {
-                if (!RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, eventData.pointerPressRaycast.screenPosition, eventData.enterEventCamera))
+                if (!RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, screenPosition, camera))
                 {
                     Vector2 localMousePos;
-                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, eventData.pointerPressRaycast.screenPosition, eventData.pressEventCamera, out localMousePos))
+                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, screenPosition, camera, out localMousePos))
                     {
                         var axisCoordinate = axis == 0 ? localMousePos.x : localMousePos.y;
 
