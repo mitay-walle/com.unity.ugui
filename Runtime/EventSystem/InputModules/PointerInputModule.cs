@@ -285,11 +285,15 @@ namespace UnityEngine.EventSystems
             // copy the apropriate data into right and middle slots
             PointerEventData rightData;
             GetPointerData(kMouseRightId, out rightData, true);
+            rightData.Reset();
+
             CopyFromTo(leftData, rightData);
             rightData.button = PointerEventData.InputButton.Right;
 
             PointerEventData middleData;
             GetPointerData(kMouseMiddleId, out middleData, true);
+            middleData.Reset();
+
             CopyFromTo(leftData, middleData);
             middleData.button = PointerEventData.InputButton.Middle;
 
