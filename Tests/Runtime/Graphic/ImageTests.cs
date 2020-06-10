@@ -18,13 +18,14 @@ namespace UnityEngine.UI.Tests
         bool m_dirtyMaterial;
 
         Camera m_camera;
+        GameObject m_CanvasRoot;
 
         [SetUp]
         public void TestSetup()
         {
-            var canvasRoot = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
+            m_CanvasRoot = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
             GameObject gameObject = new GameObject("Image", typeof(RectTransform), typeof(Image));
-            gameObject.transform.SetParent(canvasRoot.transform);
+            gameObject.transform.SetParent(m_CanvasRoot.transform);
 
             m_camera = new GameObject("Camera", typeof(Camera)).GetComponent<Camera>();
 
@@ -62,7 +63,8 @@ namespace UnityEngine.UI.Tests
             m_Image = null;
             m_Sprite = null;
 
-            GameObject.Destroy(m_camera.gameObject);
+            GameObject.DestroyImmediate(m_CanvasRoot);
+            GameObject.DestroyImmediate(m_camera.gameObject);
             m_camera = null;
         }
 

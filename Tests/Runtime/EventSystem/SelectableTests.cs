@@ -29,6 +29,8 @@ namespace UnityEngine.UI.Tests
         }
 
         private SelectableTest selectable;
+        private GameObject m_CanvasRoot;
+        private GameObject m_EventSystemGO;
 
         private CanvasGroup CreateAndParentGroupTo(string name, GameObject child)
         {
@@ -42,13 +44,21 @@ namespace UnityEngine.UI.Tests
         [SetUp]
         public void TestSetup()
         {
-            EventSystem.current = new GameObject("EventSystem", typeof(EventSystem)).GetComponent<EventSystem>();
-            GameObject canvasRoot = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
+            m_EventSystemGO = new GameObject("EventSystem", typeof(EventSystem));
+            EventSystem.current = m_EventSystemGO.GetComponent<EventSystem>();
+            m_CanvasRoot = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas));
             GameObject SelectableGO = new GameObject("Selectable", typeof(RectTransform), typeof(CanvasRenderer));
 
-            SelectableGO.transform.SetParent(canvasRoot.transform);
+            SelectableGO.transform.SetParent(m_CanvasRoot.transform);
             selectable = SelectableGO.AddComponent<SelectableTest>();
             selectable.targetGraphic = selectable.gameObject.AddComponent<ConcreteGraphic>();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            GameObject.DestroyImmediate(m_CanvasRoot);
+            GameObject.DestroyImmediate(m_EventSystemGO);
         }
 
         [Test] // regression test 1160054

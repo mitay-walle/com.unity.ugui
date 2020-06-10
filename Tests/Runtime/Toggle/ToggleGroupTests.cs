@@ -53,6 +53,8 @@ namespace ToggleTest
                 Directory.CreateDirectory("Assets/Resources/");
 
             PrefabUtility.SaveAsPrefabAsset(rootGO, kPrefabToggleGroupPath);
+
+            GameObject.DestroyImmediate(rootGO);
 #endif
         }
 

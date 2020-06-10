@@ -29,14 +29,14 @@ public class InputModuleTests
         imageRectTransform.localPosition = Vector3.zero;
 
         GameObject go = new GameObject("Event System");
+        m_EventSystem = go.AddComponent<EventSystem>();
+        m_EventSystem.pixelDragThreshold = 1;
+
         m_StandaloneInputModule = go.AddComponent<StandaloneInputModule>();
         m_FakeBaseInput = go.AddComponent<FakeBaseInput>();
 
         // Override input with FakeBaseInput so we can send fake mouse/keyboards button presses and touches
         m_StandaloneInputModule.inputOverride = m_FakeBaseInput;
-
-        m_EventSystem = go.AddComponent<EventSystem>();
-        m_EventSystem.pixelDragThreshold = 1;
 
         Cursor.lockState = CursorLockMode.None;
     }
@@ -112,6 +112,10 @@ public class InputModuleTests
         yield return null;
         m_FakeBaseInput.MouseButtonDown[0] = false;
         yield return null;
+        m_FakeBaseInput.MouseButtonUp[0] = true;
+        yield return null;
+        m_FakeBaseInput.MouseButtonUp[0] = false;
+        yield return null;
         Assert.IsTrue(callbackCheck.pointerDown);
 
         //Reset the callbackcheck and click outside the mask but still in the image.
@@ -122,6 +126,10 @@ public class InputModuleTests
         yield return null;
         m_FakeBaseInput.MouseButtonDown[0] = false;
         yield return null;
+        m_FakeBaseInput.MouseButtonUp[0] = true;
+        yield return null;
+        m_FakeBaseInput.MouseButtonUp[0] = false;
+        yield return null;
         Assert.IsTrue(callbackCheck.pointerDown);
 
         //Reset the callbackcheck and click outside the mask and outside in the image.
@@ -131,6 +139,10 @@ public class InputModuleTests
         m_FakeBaseInput.MouseButtonDown[0] = true;
         yield return null;
         m_FakeBaseInput.MouseButtonDown[0] = false;
+        yield return null;
+        m_FakeBaseInput.MouseButtonUp[0] = true;
+        yield return null;
+        m_FakeBaseInput.MouseButtonUp[0] = false;
         yield return null;
         Assert.IsFalse(callbackCheck.pointerDown);
     }

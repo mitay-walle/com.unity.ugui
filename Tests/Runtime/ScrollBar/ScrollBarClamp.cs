@@ -13,6 +13,7 @@ public class ScrollBarClamp : IPrebuildSetup
 {
     // This test tests that setting scrollBar.value will not be clamped (case 802330 - Scrollbar stops velocity of 'Scroll Rect' unexpectedly)
     GameObject m_PrefabRoot;
+    GameObject m_CameraGO;
 
     const string kPrefabPath = "Assets/Resources/ScrollBarClampPrefab.prefab";
 
@@ -91,7 +92,7 @@ public class ScrollBarClamp : IPrebuildSetup
     public void TestSetup()
     {
         m_PrefabRoot = Object.Instantiate(Resources.Load("ScrollBarClampPrefab")) as GameObject;
-        new GameObject("Camera", typeof(Camera));
+        m_CameraGO = new GameObject("Camera", typeof(Camera));
         Canvas.ForceUpdateCanvases();
     }
 
@@ -115,6 +116,7 @@ public class ScrollBarClamp : IPrebuildSetup
     public void TearDown()
     {
         Object.DestroyImmediate(m_PrefabRoot);
+        GameObject.DestroyImmediate(m_CameraGO);
     }
 
     [OneTimeTearDown]

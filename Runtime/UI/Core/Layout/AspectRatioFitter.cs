@@ -58,6 +58,9 @@ namespace UnityEngine.UI
         // This "delayed" mechanism is required for case 1014834.
         private bool m_DelayedSetDirty = false;
 
+        //Does the gameobject has a parent for reference to enable FitToParent/EnvelopeParent modes.
+        private bool m_DoesParentExist = false;
+
         private RectTransform rectTransform
         {
             get
@@ -79,6 +82,15 @@ namespace UnityEngine.UI
         {
             base.OnEnable();
             SetDirty();
+            m_DoesParentExist = rectTransform.parent ? true : false;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            //Disable the component if the aspect mode is not valid or the object state/setup is not supported with AspectRatio setup.
+            if (!IsComponentValidOnObject() || !IsAspectModeValid())
+                this.enabled = false;
         }
 
         protected override void OnDisable()
@@ -86,6 +98,13 @@ namespace UnityEngine.UI
             m_Tracker.Clear();
             LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
             base.OnDisable();
+        }
+
+        protected override void OnTransformParentChanged()
+        {
+            base.OnTransformParentChanged();
+
+            m_DoesParentExist = rectTransform.parent ? true : false;
         }
 
         /// <summary>
@@ -111,7 +130,7 @@ namespace UnityEngine.UI
 
         private void UpdateRect()
         {
-            if (!IsActive())
+            if (!IsActive() || !IsComponentValidOnObject())
                 return;
 
             m_Tracker.Clear();
@@ -142,6 +161,9 @@ namespace UnityEngine.UI
                 case AspectMode.FitInParent:
                 case AspectMode.EnvelopeParent:
                 {
+                    if (!DoesParentExists())
+                        break;
+
                     m_Tracker.Add(this, rectTransform,
                         DrivenTransformProperties.Anchors |
                         DrivenTransformProperties.AnchoredPosition |
@@ -196,6 +218,29 @@ namespace UnityEngine.UI
         protected void SetDirty()
         {
             UpdateRect();
+        }
+
+        public bool IsComponentValidOnObject()
+        {
+            Canvas canvas = gameObject.GetComponent<Canvas>();
+            if (canvas && canvas.renderMode != RenderMode.WorldSpace)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsAspectModeValid()
+        {
+            if (!DoesParentExists() && (aspectMode == AspectMode.EnvelopeParent || aspectMode == AspectMode.FitInParent))
+                return false;
+
+            return true;
+        }
+
+        private bool DoesParentExists()
+        {
+            return m_DoesParentExist;
         }
 
     #if UNITY_EDITOR

@@ -15,6 +15,7 @@ namespace UnityEngine.UI.Tests
     public class RectMask2DClipping : IPrebuildSetup
     {
         GameObject m_PrefabRoot;
+        GameObject m_CameraGO;
 
         const string kPrefabPath = "Assets/Resources/Mask2DRectCullingPrefab.prefab";
 
@@ -53,7 +54,7 @@ namespace UnityEngine.UI.Tests
         public void TestSetup()
         {
             m_PrefabRoot = Object.Instantiate(Resources.Load("Mask2DRectCullingPrefab")) as GameObject;
-            new GameObject("Camera", typeof(Camera));
+            m_CameraGO = new GameObject("Camera", typeof(Camera));
         }
 
         [UnityTest]
@@ -94,6 +95,7 @@ namespace UnityEngine.UI.Tests
         public void TearDown()
         {
             Object.DestroyImmediate(m_PrefabRoot);
+            GameObject.DestroyImmediate(m_CameraGO);
         }
 
         [OneTimeTearDown]
