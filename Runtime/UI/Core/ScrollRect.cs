@@ -1119,6 +1119,7 @@ namespace UnityEngine.UI
         public virtual void SetLayoutHorizontal()
         {
             m_Tracker.Clear();
+            UpdateCachedData();
 
             if (m_HSliderExpand || m_VSliderExpand)
             {

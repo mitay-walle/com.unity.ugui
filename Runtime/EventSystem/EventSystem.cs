@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 namespace UnityEngine.EventSystems
 {
     [AddComponentMenu("Event/Event System")]
+    [DisallowMultipleComponent]
     /// <summary>
     /// Handles input, raycasting, and sending events.
     /// </summary>
@@ -382,6 +383,16 @@ namespace UnityEngine.EventSystems
 
             if (!changedModule && m_CurrentInputModule != null)
                 m_CurrentInputModule.Process();
+
+#if UNITY_EDITOR
+            if (Application.isPlaying)
+            {
+                int eventSystemCount = m_EventSystems.Count;
+
+                if (eventSystemCount > 1)
+                    Debug.LogWarning("There are " + eventSystemCount + " event systems in the scene. Please ensure there is always exactly one event system in the scene");
+            }
+#endif
         }
 
         private void ChangeEventModule(BaseInputModule module)
