@@ -1367,7 +1367,9 @@ namespace UnityEngine.UI
             }
             else if (m_HideMobileInput && m_Keyboard.canSetSelection)
             {
-                m_Keyboard.selection = new RangeInt(caretPositionInternal, caretSelectPositionInternal - caretPositionInternal);
+                var selectionStart = Mathf.Min(caretSelectPositionInternal, caretPositionInternal);
+                var selectionLength = Mathf.Abs(caretSelectPositionInternal - caretPositionInternal);
+                m_Keyboard.selection = new RangeInt(selectionStart, selectionLength);
             }
             else if (m_Keyboard.canGetSelection && !m_HideMobileInput)
             {
