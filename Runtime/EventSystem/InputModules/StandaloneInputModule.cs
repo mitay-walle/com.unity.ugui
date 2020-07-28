@@ -186,7 +186,7 @@ namespace UnityEngine.EventSystems
             {
                 ExecuteEvents.Execute(pointerEvent.pointerClick, pointerEvent, ExecuteEvents.pointerClickHandler);
             }
-            else if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
+            if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
             {
                 ExecuteEvents.ExecuteHierarchy(currentOverGo, pointerEvent, ExecuteEvents.dropHandler);
             }
