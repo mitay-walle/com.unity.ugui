@@ -2238,10 +2238,25 @@ namespace UnityEngine.UI
 
             // If we have an input validator, validate the input first
             int insertionPoint = Math.Min(selectionFocusPosition, selectionAnchorPosition);
+
+            //Get the text based on selection for validation instead of whole text(case 1253193).
+            var validateText = text;
+            if (selectionFocusPosition != selectionAnchorPosition)
+            {
+                if (caretPositionInternal < caretSelectPositionInternal)
+                {
+                    validateText = text.Substring(0, caretPositionInternal) + text.Substring(caretSelectPositionInternal, text.Length - caretSelectPositionInternal);
+                }
+                else
+                {
+                    validateText = text.Substring(0, caretSelectPositionInternal) + text.Substring(caretPositionInternal, text.Length - caretPositionInternal);
+                }
+            }
+
             if (onValidateInput != null)
-                input = onValidateInput(text, insertionPoint, input);
+                input = onValidateInput(validateText, insertionPoint, input);
             else if (characterValidation != CharacterValidation.None)
-                input = Validate(text, insertionPoint, input);
+                input = Validate(validateText, insertionPoint, input);
 
             // If the input is invalid, skip it
             if (input == 0)
