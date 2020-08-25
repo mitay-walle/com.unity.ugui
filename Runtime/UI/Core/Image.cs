@@ -691,6 +691,7 @@ namespace UnityEngine.UI
             set
             {
                 m_PixelsPerUnitMultiplier = Mathf.Max(0.01f, value);
+                SetVerticesDirty();
             }
         }
 
