@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor.AnimatedValues;
 using UnityEngine.UI;
 
 namespace UnityEditor.UI
@@ -14,6 +15,8 @@ namespace UnityEditor.UI
         SerializedProperty m_AspectMode;
         SerializedProperty m_AspectRatio;
 
+
+        AnimBool m_ModeBool;
         private AspectRatioFitter aspectRatioFitter;
 
         protected virtual void OnEnable()
@@ -21,13 +24,22 @@ namespace UnityEditor.UI
             m_AspectMode = serializedObject.FindProperty("m_AspectMode");
             m_AspectRatio = serializedObject.FindProperty("m_AspectRatio");
             aspectRatioFitter = target as AspectRatioFitter;
+
+            m_ModeBool = new AnimBool(m_AspectMode.intValue != 0);
+            m_ModeBool.valueChanged.AddListener(Repaint);
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
             EditorGUILayout.PropertyField(m_AspectMode);
-            EditorGUILayout.PropertyField(m_AspectRatio);
+
+            m_ModeBool.target = m_AspectMode.intValue != 0;
+
+            if (EditorGUILayout.BeginFadeGroup(m_ModeBool.faded))
+                EditorGUILayout.PropertyField(m_AspectRatio);
+            EditorGUILayout.EndFadeGroup();
+
             serializedObject.ApplyModifiedProperties();
 
             if (aspectRatioFitter)
@@ -44,6 +56,7 @@ namespace UnityEditor.UI
         protected virtual void OnDisable()
         {
             aspectRatioFitter = null;
+            m_ModeBool.valueChanged.RemoveListener(Repaint);
         }
 
         private static void ShowNoParentWarning()
