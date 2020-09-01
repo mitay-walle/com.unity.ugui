@@ -22,6 +22,7 @@ namespace UnityEngine.UI
     {
         protected static Selectable[] s_Selectables = new Selectable[10];
         protected static int s_SelectableCount = 0;
+        private bool m_EnableCalled = false;
 
         /// <summary>
         /// Copy of the array of all the selectable objects currently active in the scene.
@@ -481,6 +482,10 @@ namespace UnityEngine.UI
         // Select on enable and add to the list.
         protected override void OnEnable()
         {
+            //Check to avoid multiple OnEnable() calls for each selectable
+            if (m_EnableCalled)
+                return;
+
             base.OnEnable();
 
             if (s_SelectableCount == s_Selectables.Length)
@@ -494,6 +499,8 @@ namespace UnityEngine.UI
             s_SelectableCount++;
             isPointerDown = false;
             DoStateTransition(currentSelectionState, true);
+
+            m_EnableCalled = true;
         }
 
         protected override void OnTransformParentChanged()
@@ -517,6 +524,10 @@ namespace UnityEngine.UI
         // Remove from the list.
         protected override void OnDisable()
         {
+            //Check to avoid multiple OnDisable() calls for each selectable
+            if (!m_EnableCalled)
+                return;
+
             s_SelectableCount--;
 
             // Update the last elements index to be this index
@@ -530,6 +541,8 @@ namespace UnityEngine.UI
 
             InstantClearState();
             base.OnDisable();
+
+            m_EnableCalled = false;
         }
 
 #if UNITY_EDITOR
