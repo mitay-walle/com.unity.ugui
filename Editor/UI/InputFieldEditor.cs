@@ -30,7 +30,6 @@ namespace UnityEditor.UI
         SerializedProperty m_OnValueChanged;
         SerializedProperty m_OnEndEdit;
         SerializedProperty m_ReadOnly;
-        SerializedProperty m_ShouldActivateOnSelect;
 
         AnimBool m_CustomColor;
 
@@ -55,7 +54,6 @@ namespace UnityEditor.UI
             m_OnValueChanged = serializedObject.FindProperty("m_OnValueChanged");
             m_OnEndEdit = serializedObject.FindProperty("m_OnEndEdit");
             m_ReadOnly = serializedObject.FindProperty("m_ReadOnly");
-            m_ShouldActivateOnSelect = serializedObject.FindProperty("m_ShouldActivateOnSelect");
 
             m_CustomColor = new AnimBool(m_CustomCaretColor.boolValue);
             m_CustomColor.valueChanged.AddListener(Repaint);
@@ -132,7 +130,6 @@ namespace UnityEditor.UI
                 EditorGUILayout.PropertyField(m_SelectionColor);
                 EditorGUILayout.PropertyField(m_HideMobileInput);
                 EditorGUILayout.PropertyField(m_ReadOnly);
-                EditorGUILayout.PropertyField(m_ShouldActivateOnSelect);
 
                 EditorGUILayout.Space();
 

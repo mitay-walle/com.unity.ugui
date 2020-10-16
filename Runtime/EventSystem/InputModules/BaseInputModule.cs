@@ -12,6 +12,7 @@ namespace UnityEngine.EventSystems
     /// </remarks>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using UnityEngine;
     /// using UnityEngine.EventSystems;
     ///
@@ -30,7 +31,8 @@ namespace UnityEngine.EventSystems
     ///         ExecuteEvents.Execute (m_TargetObject, new BaseEventData (eventSystem), ExecuteEvents.moveHandler);
     ///     }
     /// }
-    /// </code>
+    /// ]]>
+    ///</code>
     /// </example>
     public abstract class BaseInputModule : UIBehaviour
     {

@@ -275,9 +275,6 @@ namespace UnityEngine.UI
         [SerializeField]
         private bool m_ReadOnly = false;
 
-        [SerializeField]
-        private bool m_ShouldActivateOnSelect = true;
-
         protected int m_CaretPosition = 0;
         protected int m_CaretSelectPosition = 0;
         private RectTransform caretRectTrans = null;
@@ -353,6 +350,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -367,7 +365,8 @@ namespace UnityEngine.UI
         ///         mainInputField.shouldHideMobileInput = true;
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public bool shouldHideMobileInput
         {
@@ -389,19 +388,11 @@ namespace UnityEngine.UI
             }
         }
 
-        /// <summary>
-        /// Should the inputfield be automatically activated upon selection.
-        /// </summary>
-
-        public virtual bool shouldActivateOnSelect
+        bool shouldActivateOnSelect
         {
-            set
-            {
-                m_ShouldActivateOnSelect = value;
-            }
             get
             {
-                return m_ShouldActivateOnSelect && Application.platform != RuntimePlatform.tvOS;
+                return Application.platform != RuntimePlatform.tvOS;
             }
         }
 
@@ -413,6 +404,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -426,7 +418,8 @@ namespace UnityEngine.UI
         ///         mainInputField.text = "Enter Text Here...";
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public string text
         {
@@ -506,6 +499,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -523,7 +517,8 @@ namespace UnityEngine.UI
         ///         }
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public bool isFocused
         {
@@ -603,6 +598,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -617,7 +613,8 @@ namespace UnityEngine.UI
         ///         mainInputField.selectionColor = Color.red;
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public Color selectionColor { get { return m_SelectionColor; } set { if (SetPropertyUtility.SetColor(ref m_SelectionColor, value)) MarkGeometryAsDirty(); } }
 
@@ -626,6 +623,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -654,7 +652,8 @@ namespace UnityEngine.UI
         ///         mainInputField.onEndEdit.AddListener(delegate {LockInput(mainInputField); });
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public SubmitEvent onEndEdit { get { return m_OnEndEdit; } set { SetPropertyUtility.SetClass(ref m_OnEndEdit, value); } }
 
@@ -666,6 +665,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -686,7 +686,8 @@ namespace UnityEngine.UI
         ///         Debug.Log("Value Changed");
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public OnChangeEvent onValueChanged { get { return m_OnValueChanged; } set { SetPropertyUtility.SetClass(ref m_OnValueChanged, value); } }
 
@@ -695,6 +696,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -720,7 +722,8 @@ namespace UnityEngine.UI
         ///         return charToValidate;
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public OnValidateInput onValidateInput { get { return m_OnValidateInput; } set { SetPropertyUtility.SetClass(ref m_OnValidateInput, value); } }
 
@@ -729,6 +732,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -744,7 +748,8 @@ namespace UnityEngine.UI
         ///         mainInputField.characterLimit = playerName.Length;
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public int characterLimit
         {
@@ -768,6 +773,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -783,7 +789,8 @@ namespace UnityEngine.UI
         ///         mainInputField.characterLimit = playerName.Length;
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public ContentType contentType { get { return m_ContentType; } set { if (SetPropertyUtility.SetStruct(ref m_ContentType, value)) EnforceContentType(); } }
 
@@ -792,6 +799,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -820,7 +828,8 @@ namespace UnityEngine.UI
         ///         }
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public LineType lineType
         {
@@ -876,6 +885,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -896,7 +906,8 @@ namespace UnityEngine.UI
         ///         }
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public bool multiLine { get { return m_LineType == LineType.MultiLineNewline || lineType == LineType.MultiLineSubmit; } }
 
@@ -908,6 +919,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -922,7 +934,8 @@ namespace UnityEngine.UI
         ///         mainInputField.asteriskChar = "$!£%&*"[0];
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public char asteriskChar { get { return m_AsteriskChar; } set { if (SetPropertyUtility.SetStruct(ref m_AsteriskChar, value)) UpdateLabel(); } }
 
@@ -1152,6 +1165,7 @@ namespace UnityEngine.UI
         /// <example>
         /// //Create an Input Field by going to __Create__>__UI__>__Input Field__. Attach this script to the Input Field GameObject
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using UnityEngine.UI;
         ///
@@ -1174,7 +1188,8 @@ namespace UnityEngine.UI
         ///         }
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         protected void OnFocus()
         {
@@ -1246,30 +1261,9 @@ namespace UnityEngine.UI
             }
         }
 
-        // Returns true if the TouchScreenKeyboard should be used. On Android and Chrome OS, we only want to use the
-        // TouchScreenKeyboard if in-place editing is not allowed (i.e. when we do not have a hardware keyboard available).
-        private bool TouchScreenKeyboardShouldBeUsed()
-        {
-            RuntimePlatform platform = Application.platform;
-            switch (platform)
-            {
-                case RuntimePlatform.Android:
-                    return !TouchScreenKeyboard.isInPlaceEditingAllowed;
-                default:
-                    return TouchScreenKeyboard.isSupported;
-            }
-        }
-
         private bool InPlaceEditing()
         {
             return !TouchScreenKeyboard.isSupported || m_TouchKeyboardAllowsInPlaceEditing;
-        }
-
-        // In-place editing can change state if a hardware keyboard becomes available or is hidden while the input field is activated.
-        // This currently only happens on Chrome OS devices (that support laptop and tablet mode).
-        private bool InPlaceEditingChanged()
-        {
-            return m_TouchKeyboardAllowsInPlaceEditing != TouchScreenKeyboard.isInPlaceEditingAllowed;
         }
 
         void UpdateCaretFromKeyboard()
@@ -1322,21 +1316,6 @@ namespace UnityEngine.UI
             }
 
             AssignPositioningIfNeeded();
-
-            // If the device's state changed in a way that affects whether we should use a touchscreen keyboard or not,
-            // then we make sure to clear all of the caret/highlight state visually and deactivate the input field.
-            if (isFocused && InPlaceEditingChanged())
-            {
-                if (m_CachedInputRenderer != null)
-                {
-                    using (var helper = new VertexHelper())
-                        helper.FillMesh(mesh);
-
-                    m_CachedInputRenderer.SetMesh(mesh);
-                }
-
-                DeactivateInputField();
-            }
 
             if (!isFocused || InPlaceEditing())
                 return;
@@ -2580,7 +2559,7 @@ namespace UnityEngine.UI
                 return;
 #endif
             // No need to draw a cursor on mobile as its handled by the devices keyboard.
-            if (!InPlaceEditing() && !shouldHideMobileInput)
+            if (!shouldHideMobileInput)
                 return;
 
             if (m_CachedInputRenderer == null && m_TextComponent != null)
@@ -2859,14 +2838,14 @@ namespace UnityEngine.UI
 
                 if (char.IsLetter(ch))
                 {
-                    // Character following a space should be in uppercase.
-                    if (char.IsLower(ch) && ((pos == 0) || (text[pos - 1] == ' ')))
+                    // Character following a space or a hyphen should be in uppercase.
+                    if (char.IsLower(ch) && ((pos == 0) || (text[pos - 1] == ' ') || (text[pos - 1] == '-')))
                     {
                         return char.ToUpper(ch);
                     }
 
-                    // Character not following a space or an apostrophe should be in lowercase.
-                    if (char.IsUpper(ch) && (pos > 0) && (text[pos - 1] != ' ') && (text[pos - 1] != '\''))
+                    // Character not following a space or an apostrophe or a hyphen should be in lowercase.
+                    if (char.IsUpper(ch) && (pos > 0) && (text[pos - 1] != ' ') && (text[pos - 1] != '\'') && (text[pos - 1] != '-'))
                     {
                         return char.ToLower(ch);
                     }
@@ -2879,18 +2858,18 @@ namespace UnityEngine.UI
                     // Don't allow more than one apostrophe
                     if (!text.Contains("'"))
                         // Don't allow consecutive spaces and apostrophes.
-                        if (!(((pos > 0) && ((text[pos - 1] == ' ') || (text[pos - 1] == '\''))) ||
-                              ((pos < text.Length) && ((text[pos] == ' ') || (text[pos] == '\'')))))
+                        if (!(((pos > 0) && ((text[pos - 1] == ' ') || (text[pos - 1] == '\'') || (text[pos - 1] == '-'))) ||
+                              ((pos < text.Length) && ((text[pos] == ' ') || (text[pos] == '\'') || (text[pos] == '-')))))
                             return ch;
                 }
 
-                if (ch == ' ')
+                if (ch == ' ' || ch == '-')
                 {
-                    if (pos != 0) // Don't allow leading spaces
+                    if (pos != 0) // Don't allow leading spaces and hyphens
                     {
-                        // Don't allow consecutive spaces and apostrophes.
-                        if (!(((pos > 0) && ((text[pos - 1] == ' ') || (text[pos - 1] == '\''))) ||
-                              ((pos < text.Length) && ((text[pos] == ' ') || (text[pos] == '\'')))))
+                        // Don't allow consecutive spaces, apostrophes and hyphens.
+                        if (!(((pos > 0) && ((text[pos - 1] == ' ') || (text[pos - 1] == '\'') || (text[pos - 1] == '-'))) ||
+                              ((pos < text.Length) && ((text[pos] == ' ') || (text[pos] == '\'') || (text[pos - 1] == '-')))))
                             return ch;
                     }
                 }
@@ -2928,6 +2907,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI;
@@ -2942,7 +2922,8 @@ namespace UnityEngine.UI
         ///         mainInputField.ActivateInputField();
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public void ActivateInputField()
         {
@@ -2969,12 +2950,7 @@ namespace UnityEngine.UI
             if (EventSystem.current.currentSelectedGameObject != gameObject)
                 EventSystem.current.SetSelectedGameObject(gameObject);
 
-            // Cache the value of isInPlaceEditingAllowed, because on UWP this involves calling into native code
-            // Usually, the value only needs to be updated once when the TouchKeyboard is opened; however, on Chrome OS,
-            // we check repeatedly to see if the in-place editing state has changed, so we can take action.
-            m_TouchKeyboardAllowsInPlaceEditing = TouchScreenKeyboard.isInPlaceEditingAllowed;
-
-            if (TouchScreenKeyboardShouldBeUsed())
+            if (TouchScreenKeyboard.isSupported)
             {
                 if (input != null && input.touchSupported)
                 {
@@ -2983,6 +2959,10 @@ namespace UnityEngine.UI
                 m_Keyboard = (inputType == InputType.Password) ?
                     TouchScreenKeyboard.Open(m_Text, keyboardType, false, multiLine, true, false, "", characterLimit) :
                     TouchScreenKeyboard.Open(m_Text, keyboardType, inputType == InputType.AutoCorrect, multiLine, false, false, "", characterLimit);
+
+                // Cache the value of isInPlaceEditingAllowed, because on UWP this involves calling into native code
+                // The value only needs to be updated once when the TouchKeyboard is opened.
+                m_TouchKeyboardAllowsInPlaceEditing = TouchScreenKeyboard.isInPlaceEditingAllowed;
 
                 // If TouchKeyboard doesn't support InPlaceEditing don't call OnFocus as mobile doesn't properly support select all
                 // Just set it to the end of the text (where it would move when typing starts)
@@ -3035,6 +3015,7 @@ namespace UnityEngine.UI
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI; // Required when Using UI elements.
@@ -3049,7 +3030,8 @@ namespace UnityEngine.UI
         ///         mainInputField.DeactivateInputField();
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public void DeactivateInputField()
         {

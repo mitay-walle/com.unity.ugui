@@ -238,27 +238,5 @@ namespace Graphics
             Assert.True(m_dirtyLayout, "Layout has not been dirtied");
             Assert.True(m_dirtyMaterial, "Material has not been dirtied");
         }
-
-        [Test]
-        public void SettingRaycastTargetOnDisabledGraphicDoesntAddItRaycastList()
-        {
-            Assert.True(CheckGraphicAddedToGraphicRegistry(), "Graphic should be registered in m_CanvasGraphics");
-            Assert.True(CheckGraphicAddedToRaycastGraphicRegistry(), "Graphic should be registered in m_RaycastableGraphics");
-
-            m_graphic.raycastTarget = false;
-
-            Assert.True(CheckGraphicAddedToGraphicRegistry(), "Graphic should be registered in m_CanvasGraphics");
-            Assert.False(CheckGraphicAddedToRaycastGraphicRegistry(), "Graphic should no longer be registered in m_RaycastableGraphics");
-
-            m_graphic.enabled = false;
-
-            Assert.False(CheckGraphicAddedToGraphicRegistry(), "Graphic should NOT be registered in m_CanvasGraphics");
-            Assert.False(CheckGraphicAddedToRaycastGraphicRegistry(), "Graphic should no longer be registered in m_RaycastableGraphics");
-
-            m_graphic.raycastTarget = true;
-
-            Assert.False(CheckGraphicAddedToGraphicRegistry(), "Graphic should NOT be registered in m_CanvasGraphics");
-            Assert.False(CheckGraphicAddedToRaycastGraphicRegistry(), "Graphic should no longer be registered in m_RaycastableGraphics");
-        }
     }
 }

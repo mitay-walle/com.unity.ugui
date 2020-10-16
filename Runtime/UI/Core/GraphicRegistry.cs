@@ -46,7 +46,7 @@ namespace UnityEngine.UI
         /// <param name="graphic">The Graphic being associated with the Canvas.</param>
         public static void RegisterGraphicForCanvas(Canvas c, Graphic graphic)
         {
-            if (c == null || graphic == null)
+            if (c == null)
                 return;
 
             IndexedSet<Graphic> graphics;
@@ -76,7 +76,7 @@ namespace UnityEngine.UI
         /// <param name="graphic">The Graphic being associated with the Canvas.</param>
         public static void RegisterRaycastGraphicForCanvas(Canvas c, Graphic graphic)
         {
-            if (c == null || graphic == null || !graphic.raycastTarget)
+            if (c == null || !graphic.raycastTarget)
                 return;
 
             IndexedSet<Graphic> graphics;

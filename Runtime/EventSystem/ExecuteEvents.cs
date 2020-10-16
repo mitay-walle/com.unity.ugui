@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine.Pool;
 using UnityEngine.UI;
 
 namespace UnityEngine.EventSystems
@@ -233,11 +234,9 @@ namespace UnityEngine.EventSystems
             }
         }
 
-        private static readonly ObjectPool<List<IEventSystemHandler>> s_HandlerListPool = new ObjectPool<List<IEventSystemHandler>>(null, l => l.Clear());
-
         public static bool Execute<T>(GameObject target, BaseEventData eventData, EventFunction<T> functor) where T : IEventSystemHandler
         {
-            var internalHandlers = s_HandlerListPool.Get();
+            var internalHandlers = ListPool<IEventSystemHandler>.Get();
             GetEventList<T>(target, internalHandlers);
             //  if (s_InternalHandlers.Count > 0)
             //      Debug.Log("Executinng " + typeof (T) + " on " + target);
@@ -268,7 +267,7 @@ namespace UnityEngine.EventSystems
             }
 
             var handlerCount = internalHandlers.Count;
-            s_HandlerListPool.Release(internalHandlers);
+            ListPool<IEventSystemHandler>.Release(internalHandlers);
             return handlerCount > 0;
         }
 
@@ -336,10 +335,10 @@ namespace UnityEngine.EventSystems
         /// </summary>
         public static bool CanHandleEvent<T>(GameObject go) where T : IEventSystemHandler
         {
-            var internalHandlers = s_HandlerListPool.Get();
+            var internalHandlers = ListPool<IEventSystemHandler>.Get();
             GetEventList<T>(go, internalHandlers);
             var handlerCount = internalHandlers.Count;
-            s_HandlerListPool.Release(internalHandlers);
+            ListPool<IEventSystemHandler>.Release(internalHandlers);
             return handlerCount != 0;
         }
 

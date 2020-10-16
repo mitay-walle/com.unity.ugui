@@ -144,6 +144,7 @@ namespace UnityEngine.EventSystems
         /// </summary>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using System.Collections;
         /// using UnityEngine.UI;
@@ -159,7 +160,8 @@ namespace UnityEngine.EventSystems
         ///         Debug.Log(i);
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public int clickCount { get; set; }
 
