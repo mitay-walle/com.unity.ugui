@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine.Pool;
-using UnityEngine.UI;
 
 namespace UnityEngine.EventSystems
 {
@@ -14,6 +13,13 @@ namespace UnityEngine.EventSystems
             if ((data as T) == null)
                 throw new ArgumentException(String.Format("Invalid type: {0} passed to event expecting {1}", data.GetType(), typeof(T)));
             return data as T;
+        }
+
+        private static readonly EventFunction<IPointerMoveHandler> s_PointerMoveHandler = Execute;
+
+        private static void Execute(IPointerMoveHandler handler, BaseEventData eventData)
+        {
+            handler.OnPointerMove(ValidateEventData<PointerEventData>(eventData));
         }
 
         private static readonly EventFunction<IPointerEnterHandler> s_PointerEnterHandler = Execute;
@@ -133,6 +139,11 @@ namespace UnityEngine.EventSystems
         private static void Execute(ICancelHandler handler, BaseEventData eventData)
         {
             handler.OnCancel(eventData);
+        }
+
+        public static EventFunction<IPointerMoveHandler> pointerMoveHandler
+        {
+            get { return s_PointerMoveHandler; }
         }
 
         public static EventFunction<IPointerEnterHandler> pointerEnterHandler

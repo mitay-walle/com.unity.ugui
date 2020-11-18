@@ -8,6 +8,20 @@ namespace UnityEngine.EventSystems
     }
 
     /// <summary>
+    /// Interface to implement if you wish to receive OnPointerMove callbacks.
+    /// </summary>
+    /// <remarks>
+    /// Criteria for this event is implementation dependent. For example see StandAloneInputModule.
+    /// </remarks>
+    public interface IPointerMoveHandler : IEventSystemHandler
+    {
+        /// <summary>
+        /// Use this callback to detect pointer move events
+        /// </summary>
+        void OnPointerMove(PointerEventData eventData);
+    }
+
+    /// <summary>
     /// Interface to implement if you wish to receive OnPointerEnter callbacks.
     /// </summary>
     /// <remarks>
