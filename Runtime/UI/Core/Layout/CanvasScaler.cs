@@ -303,6 +303,9 @@ namespace UnityEngine.UI
         {
             Vector2 screenSize = new Vector2(Screen.width, Screen.height);
 
+#if UNITY_EDITOR
+            screenSize = m_Canvas.displaySize;
+#else
             // Multiple display support only when not the main display. For display 0 the reported
             // resolution is always the desktops resolution since its part of the display API,
             // so we use the standard none multiple display method. (case 741751)
@@ -312,6 +315,7 @@ namespace UnityEngine.UI
                 Display disp = Display.displays[displayIndex];
                 screenSize = new Vector2(disp.renderingWidth, disp.renderingHeight);
             }
+#endif
 
             float scaleFactor = 0;
             switch (m_ScreenMatchMode)

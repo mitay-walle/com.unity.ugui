@@ -81,8 +81,8 @@ namespace UnityEngine.UI
         protected override void OnEnable()
         {
             base.OnEnable();
-            SetDirty();
             m_DoesParentExist = rectTransform.parent ? true : false;
+            SetDirty();
         }
 
         protected override void Start()
@@ -105,6 +105,7 @@ namespace UnityEngine.UI
             base.OnTransformParentChanged();
 
             m_DoesParentExist = rectTransform.parent ? true : false;
+            SetDirty();
         }
 
         /// <summary>

@@ -175,7 +175,7 @@ namespace UnityEngine.UI
 
                     m_RaycastTarget = value;
 
-                    if (m_RaycastTarget)
+                    if (m_RaycastTarget && isActiveAndEnabled)
                         GraphicRegistry.RegisterRaycastGraphicForCanvas(canvas, this);
                 }
             }
