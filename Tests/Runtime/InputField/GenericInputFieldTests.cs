@@ -119,6 +119,20 @@ namespace InputfieldTests
         }
 
         [Test]
+        public void DoesNotFocusesOnSelectWhenShouldActivateOnSelect_IsFalse()
+        {
+            InputField inputField = m_PrefabRoot.GetComponentInChildren<InputField>();
+            inputField.shouldActivateOnSelect = false;
+            BaseEventData eventData = new BaseEventData(m_PrefabRoot.GetComponentInChildren<EventSystem>());
+            inputField.OnSelect(eventData);
+
+            MethodInfo lateUpdate = typeof(InputField).GetMethod("LateUpdate", BindingFlags.NonPublic | BindingFlags.Instance);
+            lateUpdate.Invoke(inputField, null);
+
+            Assert.False(inputField.isFocused);
+        }
+
+        [Test]
         public void InputFieldSetTextWithoutNotifyWillNotNotify()
         {
             InputField i = m_PrefabRoot.GetComponentInChildren<InputField>();
