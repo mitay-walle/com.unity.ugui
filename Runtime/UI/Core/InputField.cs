@@ -275,6 +275,9 @@ namespace UnityEngine.UI
         [SerializeField]
         private bool m_ReadOnly = false;
 
+        [SerializeField]
+        private bool m_ShouldActivateOnSelect = true;
+
         protected int m_CaretPosition = 0;
         protected int m_CaretSelectPosition = 0;
         private RectTransform caretRectTrans = null;
@@ -386,11 +389,19 @@ namespace UnityEngine.UI
             }
         }
 
-        bool shouldActivateOnSelect
+        /// <summary>
+        /// Should the inputfield be automatically activated upon selection.
+        /// </summary>
+
+        public virtual bool shouldActivateOnSelect
         {
+            set
+            {
+                m_ShouldActivateOnSelect = value;
+            }
             get
             {
-                return Application.platform != RuntimePlatform.tvOS;
+                return m_ShouldActivateOnSelect && Application.platform != RuntimePlatform.tvOS;
             }
         }
 
@@ -1367,7 +1378,9 @@ namespace UnityEngine.UI
             }
             else if (m_HideMobileInput && m_Keyboard.canSetSelection)
             {
-                m_Keyboard.selection = new RangeInt(caretPositionInternal, caretSelectPositionInternal - caretPositionInternal);
+                var selectionStart = Mathf.Min(caretSelectPositionInternal, caretPositionInternal);
+                var selectionLength = Mathf.Abs(caretSelectPositionInternal - caretPositionInternal);
+                m_Keyboard.selection = new RangeInt(selectionStart, selectionLength);
             }
             else if (m_Keyboard.canGetSelection && !m_HideMobileInput)
             {
