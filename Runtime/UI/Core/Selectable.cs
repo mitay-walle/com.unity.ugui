@@ -606,7 +606,7 @@ namespace UnityEngine.UI
 
 #endif // if UNITY_EDITOR
 
-        protected SelectionState currentSelectionState
+        public SelectionState currentSelectionState
         {
             get
             {
@@ -712,7 +712,7 @@ namespace UnityEngine.UI
         /// <summary>
         /// An enumeration of selected states of objects
         /// </summary>
-        protected enum SelectionState
+        public enum SelectionState
         {
             /// <summary>
             /// The UI object can be selected.
@@ -774,16 +774,22 @@ namespace UnityEngine.UI
         /// ]]>
         ///</code>
         /// </example>
-        public Selectable FindSelectable(Vector3 dir)
+        public Selectable FindSelectable(Vector3 dir, Vector3 sideDir)
         {
+            return FindSelectable(this, dir, sideDir);
+        }
+
+        public static Selectable FindSelectable(Selectable source, Vector3 dir, Vector3 sideDir)
+        {
+            var transform = source.transform;
+            var navigation = source.navigation;
             dir = dir.normalized;
             Vector3 localDir = Quaternion.Inverse(transform.rotation) * dir;
-            Vector3 pos = transform.TransformPoint(GetPointOnRectEdge(transform as RectTransform, localDir));
+            Vector3 origin = transform.TransformPoint(GetPointOnRectEdge(transform as RectTransform, localDir));
             float maxScore = Mathf.NegativeInfinity;
             float maxFurthestScore = Mathf.NegativeInfinity;
-            float score = 0;
 
-            bool wantsWrapAround = navigation.wrapAround && (m_Navigation.mode == Navigation.Mode.Vertical || m_Navigation.mode == Navigation.Mode.Horizontal);
+            bool wantsWrapAround = navigation.wrapAround;
 
             Selectable bestPick = null;
             Selectable bestFurthestPick = null;
@@ -792,7 +798,7 @@ namespace UnityEngine.UI
             {
                 Selectable sel = s_Selectables[i];
 
-                if (sel == this)
+                if (sel == source)
                     continue;
 
                 if (!sel.IsInteractable() || sel.navigation.mode == Navigation.Mode.None)
@@ -802,21 +808,24 @@ namespace UnityEngine.UI
                 // Apart from runtime use, FindSelectable is used by custom editors to
                 // draw arrows between different selectables. For scene view cameras,
                 // only selectables in the same stage should be considered.
-                if (Camera.current != null && !UnityEditor.SceneManagement.StageUtility.IsGameObjectRenderedByCamera(sel.gameObject, Camera.current))
+                if (Camera.current != null &&
+                    !UnityEditor.SceneManagement.StageUtility.IsGameObjectRenderedByCamera(sel.gameObject,
+                        Camera.current))
                     continue;
 #endif
 
-                var selRect = sel.transform as RectTransform;
-                Vector3 selCenter = selRect != null ? (Vector3)selRect.rect.center : Vector3.zero;
-                Vector3 myVector = sel.transform.TransformPoint(selCenter) - pos;
+                RectTransform selRect = sel.transform as RectTransform;
+                Vector3 selCenter = selRect != null ? selRect.rect.center : Vector3.zero;
+                Vector3 selVector = sel.transform.TransformPoint(selCenter) - origin;
 
                 // Value that is the distance out along the direction.
-                float dot = Vector3.Dot(dir, myVector);
-
+                float dot = Vector3.Dot(dir, selVector);
+                float sideDistance = Mathf.Abs(Vector3.Dot(sideDir, selVector));
                 // If element is in wrong direction and we have wrapAround enabled check and cache it if furthest away.
+                float score = 0;
                 if (wantsWrapAround && dot < 0)
                 {
-                    score = -dot * myVector.sqrMagnitude;
+                    score = (-dot -sideDistance)* selVector.sqrMagnitude ;
 
                     if (score > maxFurthestScore)
                     {
@@ -846,7 +855,7 @@ namespace UnityEngine.UI
                 // that touches pos and whose center is located along dir. A way to visualize the resulting functionality is this:
                 // From the position pos, blow up a circular balloon so it grows in the direction of dir.
                 // The first Selectable whose center the circular balloon touches is the one that's chosen.
-                score = dot / myVector.sqrMagnitude;
+                score = dot / selVector.sqrMagnitude;
 
                 if (score > maxScore)
                 {
@@ -909,12 +918,15 @@ namespace UnityEngine.UI
             {
                 return m_Navigation.selectOnLeft;
             }
+
             if ((m_Navigation.mode & Navigation.Mode.Horizontal) != 0)
             {
-                return FindSelectable(transform.rotation * Vector3.left);
+                return FindSelectable( Vector3.left,Vector3.up);
             }
+
             return null;
         }
+
 
         /// <summary>
         /// Find the selectable object to the right of this one.
@@ -948,10 +960,12 @@ namespace UnityEngine.UI
             {
                 return m_Navigation.selectOnRight;
             }
+
             if ((m_Navigation.mode & Navigation.Mode.Horizontal) != 0)
             {
-                return FindSelectable(transform.rotation * Vector3.right);
+                return FindSelectable( Vector3.right,Vector3.up);
             }
+
             return null;
         }
 
@@ -987,10 +1001,12 @@ namespace UnityEngine.UI
             {
                 return m_Navigation.selectOnUp;
             }
+
             if ((m_Navigation.mode & Navigation.Mode.Vertical) != 0)
             {
-                return FindSelectable(transform.rotation * Vector3.up);
+                return FindSelectable( Vector3.up,Vector3.right);
             }
+
             return null;
         }
 
@@ -1028,7 +1044,7 @@ namespace UnityEngine.UI
             }
             if ((m_Navigation.mode & Navigation.Mode.Vertical) != 0)
             {
-                return FindSelectable(transform.rotation * Vector3.down);
+                return FindSelectable(Vector3.down,Vector3.right);
             }
             return null;
         }
