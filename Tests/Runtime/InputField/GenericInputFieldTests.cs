@@ -27,9 +27,6 @@ namespace InputfieldTests
         public virtual void TestSetup()
         {
             m_PrefabRoot = UnityEngine.Object.Instantiate(Resources.Load("GenericInputFieldPrefab")) as GameObject;
-
-            FieldInfo inputModule = typeof(EventSystem).GetField("m_CurrentInputModule", BindingFlags.NonPublic | BindingFlags.Instance);
-            inputModule.SetValue(m_PrefabRoot.GetComponentInChildren<EventSystem>(), m_PrefabRoot.GetComponentInChildren<FakeInputModule>());
         }
 
         [TearDown]
@@ -106,6 +103,7 @@ namespace InputfieldTests
         }
 
         [Test]
+        [UnityPlatform(exclude = new[] { RuntimePlatform.Switch })] // Currently InputField.ActivateInputFieldInternal calls Switch SoftwareKeyboard screen ; without user input or a command to close the SoftwareKeyboard this blocks the tests suite
         public void FocusesOnSelect()
         {
             InputField inputField = m_PrefabRoot.GetComponentInChildren<InputField>();
@@ -116,6 +114,20 @@ namespace InputfieldTests
             lateUpdate.Invoke(inputField, null);
 
             Assert.True(inputField.isFocused);
+        }
+
+        [Test]
+        public void DoesNotFocusesOnSelectWhenShouldActivateOnSelect_IsFalse()
+        {
+            InputField inputField = m_PrefabRoot.GetComponentInChildren<InputField>();
+            inputField.shouldActivateOnSelect = false;
+            BaseEventData eventData = new BaseEventData(m_PrefabRoot.GetComponentInChildren<EventSystem>());
+            inputField.OnSelect(eventData);
+
+            MethodInfo lateUpdate = typeof(InputField).GetMethod("LateUpdate", BindingFlags.NonPublic | BindingFlags.Instance);
+            lateUpdate.Invoke(inputField, null);
+
+            Assert.False(inputField.isFocused);
         }
 
         [Test]

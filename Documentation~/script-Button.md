@@ -18,7 +18,7 @@ The **Button** control responds to a click from the user and is used to initiate
 
 |**Property:** |**Function:** |
 |:---|:---|
-|**On Click** | A [UnityEvent](UnityEvents.md) that Unity invokes when a user clicks the button and releases it. |
+|**On Click** | A [UnityEvent](https://docs.unity3d.com/Manual/UnityEvents.html) that Unity invokes when a user clicks the button and releases it.|
 
 
 ## Details

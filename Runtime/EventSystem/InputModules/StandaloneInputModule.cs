@@ -70,6 +70,7 @@ namespace UnityEngine.EventSystems
 
         [SerializeField]
         [FormerlySerializedAs("m_AllowActivationOnMobileDevice")]
+        [HideInInspector]
         private bool m_ForceModuleActive;
 
         [Obsolete("allowActivationOnMobileDevice has been deprecated. Use forceModuleActive instead (UnityUpgradable) -> forceModuleActive")]
@@ -85,6 +86,8 @@ namespace UnityEngine.EventSystems
         /// <remarks>
         /// If there is no module active with higher priority (ordered in the inspector) this module will be forced active even if valid enabling conditions are not met.
         /// </remarks>
+
+        [Obsolete("forceModuleActive has been deprecated. There is no need to force the module awake as StandaloneInputModule works for all platforms")]
         public bool forceModuleActive
         {
             get { return m_ForceModuleActive; }
@@ -186,7 +189,7 @@ namespace UnityEngine.EventSystems
             {
                 ExecuteEvents.Execute(pointerEvent.pointerClick, pointerEvent, ExecuteEvents.pointerClickHandler);
             }
-            else if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
+            if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
             {
                 ExecuteEvents.ExecuteHierarchy(currentOverGo, pointerEvent, ExecuteEvents.dropHandler);
             }
@@ -213,11 +216,6 @@ namespace UnityEngine.EventSystems
             }
 
             m_InputPointerEvent = pointerEvent;
-        }
-
-        public override bool IsModuleSupported()
-        {
-            return m_ForceModuleActive || input.mousePresent || input.touchSupported;
         }
 
         public override bool ShouldActivateModule()
@@ -408,7 +406,8 @@ namespace UnityEngine.EventSystems
                 {
                     ExecuteEvents.Execute(pointerEvent.pointerClick, pointerEvent, ExecuteEvents.pointerClickHandler);
                 }
-                else if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
+
+                if (pointerEvent.pointerDrag != null && pointerEvent.dragging)
                 {
                     ExecuteEvents.ExecuteHierarchy(currentOverGo, pointerEvent, ExecuteEvents.dropHandler);
                 }

@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI
 {
-    [AddComponentMenu("UI/Scrollbar", 34)]
+    [AddComponentMenu("UI/Scrollbar", 36)]
     [ExecuteAlways]
     [RequireComponent(typeof(RectTransform))]
     /// <summary>
@@ -142,7 +142,10 @@ namespace UnityEngine.UI
         // Size of each step.
         float stepSize { get { return (m_NumberOfSteps > 1) ? 1f / (m_NumberOfSteps - 1) : 0.1f; } }
 
+        // field is never assigned warning
+        #pragma warning disable 649
         private DrivenRectTransformTracker m_Tracker;
+        #pragma warning restore 649
         private Coroutine m_PointerDownRepeat;
         private bool isPointerDownAndNotDragging = false;
 
@@ -311,12 +314,16 @@ namespace UnityEngine.UI
             if (!MultipleDisplayUtilities.GetRelativeMousePositionForDrag(eventData, ref position))
                 return;
 
-            Vector2 localCursor;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(m_ContainerRect, position, eventData.pressEventCamera, out localCursor))
+            UpdateDrag(m_ContainerRect, position, eventData.pressEventCamera);
+        }
+
+        void UpdateDrag(RectTransform containerRect, Vector2 position, Camera camera)
+        {
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(containerRect, position, camera, out var localCursor))
                 return;
 
-            Vector2 handleCenterRelativeToContainerCorner = localCursor - m_Offset - m_ContainerRect.rect.position;
-            Vector2 handleCorner = handleCenterRelativeToContainerCorner - (m_HandleRect.rect.size - m_HandleRect.sizeDelta) * 0.5f;
+            var handleCenterRelativeToContainerCorner = localCursor - m_Offset - m_ContainerRect.rect.position;
+            var handleCorner = handleCenterRelativeToContainerCorner - (m_HandleRect.rect.size - m_HandleRect.sizeDelta) * 0.5f;
 
             float parentSize = axis == 0 ? m_ContainerRect.rect.width : m_ContainerRect.rect.height;
             float remainingSize = parentSize * (1 - size);
@@ -412,16 +419,7 @@ namespace UnityEngine.UI
             {
                 if (!RectTransformUtility.RectangleContainsScreenPoint(m_HandleRect, screenPosition, camera))
                 {
-                    Vector2 localMousePos;
-                    if (RectTransformUtility.ScreenPointToLocalPointInRectangle(m_HandleRect, screenPosition, camera, out localMousePos))
-                    {
-                        var axisCoordinate = axis == 0 ? localMousePos.x : localMousePos.y;
-
-                        // modifying value depending on direction, fixes (case 925824)
-
-                        float change = axisCoordinate < 0 ? size : -size;
-                        value += reverseValue ? change : -change;
-                    }
+                    UpdateDrag(m_ContainerRect, screenPosition, camera);
                 }
                 yield return new WaitForEndOfFrame();
             }

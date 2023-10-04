@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace UnityEngine.UI
 {
     [RequireComponent(typeof(CanvasRenderer))]
-    [AddComponentMenu("UI/Text", 10)]
+    [AddComponentMenu("UI/Legacy/Text", 100)]
     /// <summary>
     /// The default Graphic to draw font data to screen.
     /// </summary>
@@ -103,6 +103,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// //Create a new Text GameObject by going to Create>UI>Text in the Editor. Attach this script to the Text GameObject. Then, choose or click and drag your own font into the Font section in the Inspector window.
         ///
         /// using UnityEngine;
@@ -131,7 +132,8 @@ namespace UnityEngine.UI
         ///         }
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public Font font
         {
@@ -144,11 +146,13 @@ namespace UnityEngine.UI
                 if (m_FontData.font == value)
                     return;
 
-                FontUpdateTracker.UntrackText(this);
+                if (isActiveAndEnabled)
+                    FontUpdateTracker.UntrackText(this);
 
                 m_FontData.font = value;
 
-                FontUpdateTracker.TrackText(this);
+                if (isActiveAndEnabled)
+                    FontUpdateTracker.TrackText(this);
 
 #if UNITY_EDITOR
                 // needed to track font changes from the inspector
@@ -167,6 +171,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// using UnityEngine;
         /// using UnityEngine.UI;
         ///
@@ -189,7 +194,8 @@ namespace UnityEngine.UI
         ///         }
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public virtual string text
         {
@@ -303,6 +309,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// //Create a Text GameObject by going to __Create__>__UI__>__Text__. Attach this script to the GameObject to see it working.
         ///
         /// using UnityEngine;
@@ -336,7 +343,8 @@ namespace UnityEngine.UI
         ///         }
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public TextAnchor alignment
         {
@@ -386,6 +394,7 @@ namespace UnityEngine.UI
         /// </remarks>
         /// <example>
         /// <code>
+        /// <![CDATA[
         /// //For this script to work, create a new Text GameObject by going to Create>U>Text. Attach the script to the Text GameObject. Make sure the GameObject has a RectTransform component.
         ///
         /// using UnityEngine;
@@ -424,7 +433,8 @@ namespace UnityEngine.UI
         ///         m_Text.text = "I changed my Font size!";
         ///     }
         /// }
-        /// </code>
+        /// ]]>
+        ///</code>
         /// </example>
         public int fontSize
         {
@@ -574,13 +584,19 @@ namespace UnityEngine.UI
 #if UNITY_EDITOR
         protected override void Reset()
         {
-            AssignDefaultFont();
+            AssignDefaultFontIfNecessary();
         }
 
 #endif
         internal void AssignDefaultFont()
         {
-            font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        }
+
+        internal void AssignDefaultFontIfNecessary()
+        {
+            if (font == null)
+                font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         }
 
         /// <summary>
@@ -740,8 +756,11 @@ namespace UnityEngine.UI
             // After a Font asset gets re-imported the managed side gets deleted and recreated,
             // that means the delegates are not persisted.
             // so we need to properly enforce a consistent state here.
-            FontUpdateTracker.UntrackText(this);
-            FontUpdateTracker.TrackText(this);
+            if (isActiveAndEnabled)
+            {
+                FontUpdateTracker.UntrackText(this);
+                FontUpdateTracker.TrackText(this);
+            }
 
             // Also the textgenerator is no longer valid.
             cachedTextGenerator.Invalidate();
@@ -763,9 +782,14 @@ namespace UnityEngine.UI
             {
                 Font newFont = m_FontData.font;
                 m_FontData.font = m_LastTrackedFont;
-                FontUpdateTracker.UntrackText(this);
+
+                if (isActiveAndEnabled)
+                    FontUpdateTracker.UntrackText(this);
+
                 m_FontData.font = newFont;
-                FontUpdateTracker.TrackText(this);
+
+                if (isActiveAndEnabled)
+                    FontUpdateTracker.TrackText(this);
 
                 m_LastTrackedFont = newFont;
             }
