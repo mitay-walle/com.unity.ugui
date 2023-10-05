@@ -291,7 +291,7 @@ namespace UnityEngine.UI
             {
                 var defaultNav = new Navigation();
                 defaultNav.m_Mode = Mode.Automatic;
-                defaultNav.m_WrapAround = false;
+                defaultNav.m_WrapAround = true;
                 return defaultNav;
             }
         }
